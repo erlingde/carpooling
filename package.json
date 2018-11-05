@@ -1,7 +1,7 @@
 {
   "name": "carpooling",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "homepage": "https://erlingde.github.io/carpooling/",
   "dependencies": {
     "axios": "^0.18.0",
