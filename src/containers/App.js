@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Collapse, Row, Col, Radio, Menu, Icon, Dropdown } from 'antd';
+import { Button, Collapse, Row, Col, Radio, Menu, Icon, Dropdown, AutoComplete } from 'antd';
 import axios from 'axios';
 
 import './App.css';
@@ -38,8 +38,8 @@ class App extends Component {
     const menu = (
       <Menu>
         {locations.map((item) => 
-          <Menu.Item>
-            <a target="_blank" rel="noopener noreferrer" href="http://www.alipay.com/" key={item}>{item}</a>
+          <Menu.Item key={item}>
+            <a target="_blank" rel="noopener noreferrer" href="http://www.alipay.com/">{item}</a>
           </Menu.Item>
         )}
       </Menu>
@@ -67,18 +67,20 @@ class App extends Component {
           </Row>
           <Row type="flex" justify="center">
             <Col span={6}>
-              <Dropdown overlay={menu}>
-                <a className="ant-dropdown-link" href="#">
-                  From <Icon type="down" />
-                </a>
-              </Dropdown>
+              <AutoComplete
+                style={{ width: 100 }}
+                dataSource={locations}
+                placeholder="From"
+                filterOption={(inputValue, option) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
+              />
             </Col>
             <Col span={6}>
-              <Dropdown overlay={menu}>
-                <a className="ant-dropdown-link" href="#">
-                  To <Icon type="down" />
-                </a>
-              </Dropdown>
+              <AutoComplete
+                style={{ width: 100 }}
+                dataSource={locations}
+                placeholder="To"
+                filterOption={(inputValue, option) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
+              />
             </Col>
           </Row>
           <Row type="flex" justify="center">
@@ -102,18 +104,16 @@ class App extends Component {
         let tempLocations = [];
 
         results.forEach((item) => {
-          if (!tempLocations.find((x) => item.from === x)) {
+          if (item.from !== "" && !tempLocations.find((x) => item.from === x)) {
             tempLocations.push(item.from);
-          } else if (!tempLocations.find((x) => item.to === x)) {
+          } else if (item.to !== "" && !tempLocations.find((x) => item.to === x)) {
             tempLocations.push(item.to);
           }
         });
 
-        console.log(tempLocations);
-
         this.setState({
           fetchedRideRequests: results,
-          locations: tempLocations
+          locations: tempLocations.sort()
         });
       })
 
