@@ -4,6 +4,7 @@
   "private": false,
   "homepage": "http://erlingde.github.io/carpooling",
   "dependencies": {
+    "antd": "^3.10.4",
     "axios": "^0.18.0",
     "react": "^16.6.0",
     "react-dom": "^16.6.0",
