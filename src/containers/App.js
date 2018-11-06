@@ -1,79 +1,95 @@
 import React, { Component } from 'react';
-import { Button, Collapse, Row, Col, Radio } from 'antd';
+import { Button, Collapse, Row, Col, Radio, Menu, Icon, Dropdown } from 'antd';
 import axios from 'axios';
 
-import logo from '../assets/logo.svg';
 import './App.css';
-
-const Panel = Collapse.Panel;
-
-function callback(key) {
-  console.log(key);
-}
-
-const text = `
-  A dog is a type of domesticated animal.
-  Known for its loyalty and faithfulness,
-  it can be found as a welcome guest in many households across the world.
-`;
+import Panel from '../components/Panel';
 
 class App extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      currentFilter: 'passenger',
+      filter: 'passenger',
       fetchedPassengerRequests: [],
-      fetchedRideRequests: []
+      fetchedRideRequests: [],
+      locations: []
     };
 
-    this.onRadioChange = this.onRadioChange.bind(this);
+    this.callback = this.callback.bind(this);
   };
 
-  onRadioChange = function(event) {
-    this.setState({
-      currentFilter: event.target.value
-    });
+  callback = function(key) {
+    console.log(key);
+  }
+  
+
+
+  onRadioChange = (event) => {
+    this.setState((state) => {
+      return {filter: event.target.value}
+    })
   }
 
   render() {
+    let { onRadioChange, callback } = this;
+    let { filter, fetchedRideRequests, fetchedPassengerRequests, locations } = this.state;
+
+    const menu = (
+      <Menu>
+        {locations.map((item) => 
+          <Menu.Item>
+            <a target="_blank" rel="noopener noreferrer" href="http://www.alipay.com/" key={item}>{item}</a>
+          </Menu.Item>
+        )}
+      </Menu>
+    );
+
     return (
       <div className="App">
         <header className="App-header">
-        <Row type="flex" justify="center">
-          <Col span={12}>
-            <h1>
-              Carpooling
-            </h1>
-          </Col>
-        </Row>
-        <Row type="flex" justify="center">
-          <Col span={12}>
-            <h1>
-              <Radio.Group onChange={this.onRadioChange} defaultValue="passenger" buttonStyle="solid">
-                <Radio.Button value="passenger">Passengers</Radio.Button>
-                <Radio.Button value="ride">Ride</Radio.Button>
-              </Radio.Group>
-            </h1>
-          </Col>
-        </Row>
-        <Row type="flex" justify="center">
-          <Col span={12}>
-
-
-          <Collapse onChange={callback}>
-            <Panel header="This is panel header 1" key="1">
-              <p>{text}</p>
-            </Panel>
-            <Panel header="This is panel header 2" key="2">
-              <p>{text}</p>
-            </Panel>
-            <Panel header="This is panel header 3" key="3">
-              <p>{text}</p>
-            </Panel>
-          </Collapse>
-          </Col>       
-        </Row>
+          <Row type="flex" justify="center">
+            <Col span={12}>
+              <h1>
+                Carpooling
+              </h1>
+            </Col>
+          </Row>
+          <Row type="flex" justify="center">
+            <Col span={12}>
+              <h1>
+                <Radio.Group onChange={this.onRadioChange} defaultValue="passenger" buttonStyle="solid">
+                  <Radio.Button value="passenger">Passengers</Radio.Button>
+                  <Radio.Button value="ride">Ride</Radio.Button>
+                </Radio.Group>
+              </h1>
+            </Col>
+          </Row>
+          <Row type="flex" justify="center">
+            <Col span={6}>
+              <Dropdown overlay={menu}>
+                <a className="ant-dropdown-link" href="#">
+                  From <Icon type="down" />
+                </a>
+              </Dropdown>
+            </Col>
+            <Col span={6}>
+              <Dropdown overlay={menu}>
+                <a className="ant-dropdown-link" href="#">
+                  To <Icon type="down" />
+                </a>
+              </Dropdown>
+            </Col>
+          </Row>
+          <Row type="flex" justify="center">
+            <Col span={12}>
+              <Panel 
+                filter={filter}
+                rides={fetchedRideRequests}
+                passengers={fetchedPassengerRequests}
+              />
+            </Col>
+          </Row>
         </header>
       </div>
     );
@@ -82,8 +98,22 @@ class App extends Component {
   componentDidMount() {
     axios.get(`http://apis.is/rides/samferda-drivers/`)
       .then(res => {
+        let results = res.data.results;
+        let tempLocations = [];
+
+        results.forEach((item) => {
+          if (!tempLocations.find((x) => item.from === x)) {
+            tempLocations.push(item.from);
+          } else if (!tempLocations.find((x) => item.to === x)) {
+            tempLocations.push(item.to);
+          }
+        });
+
+        console.log(tempLocations);
+
         this.setState({
-          fetchedRideRequests: res.data.results
+          fetchedRideRequests: results,
+          locations: tempLocations
         });
       })
 
