@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Radio, Select } from 'antd';
+import { Row, Col, Radio, Select, Table, Divider, Tag } from 'antd';
 import axios from 'axios';
 
 import './App.css';
@@ -10,10 +10,12 @@ class App extends Component {
     super(props);
 
     this.state = {
-      filter: 'passenger',
+      tripFilter: 'passenger',
       fetchedPassengerRequests: [],
       fetchedRideRequests: [],
       locations: [],
+      filteredPassengerRequests: [],
+      filteredRideRequests: [],
       selectedFrom: ['Any'],
       selectedTo: ['Any']
     };
@@ -37,8 +39,12 @@ class App extends Component {
       value.push('Any');  
     }
 
+    let filteredLocations = this.filterLocations(value, 'from');
+    console.log(filteredLocations);
+
     this.setState({
-      selectedFrom: value
+      selectedFrom: value,
+      filteredPassengerRequests: filteredLocations
     });
   }
 
@@ -46,24 +52,98 @@ class App extends Component {
     if (value[0] === 'Any') {
       value[0] = value.pop();
     } else if (value.length === 0) {
-      value.push('Any');  
+      value.push('Any');
     }
 
+    const filteredLocations = this.filterLocations(value, 'to');
+
     this.setState({
-      selectedTo: value
+      selectedTo: value,
+      filterToLocations: filteredLocations
     });
   }
 
-  render() {
-    const { filter, fetchedRideRequests, fetchedPassengerRequests, locations, selectedFrom, selectedTo } = this.state;
-    const { handleFromFilterChange, handleToFilterChange } = this;
+  onRadioChange = (event) => {
+    this.setState({
+      selectedFrom: ['Any'],
+      selectedTo: ['Any'],
+      tripFilter: event.target.value
+    });
+  }
 
+  filterLocations = (value, tripWay) => {
+    const { tripFilter, fetchedPassengerRequests, fetchedRideRequests, filteredPassengerRequests } = this.state;
+
+    if (tripFilter === 'passenger') {
+      if (value[0] === 'Any') {
+        return fetchedPassengerRequests;
+      }
+      if (tripWay === 'from') {
+        let tempRequests = [];
+
+        filteredPassengerRequests.forEach((location) => value.find((item) => {
+          if (item === location.from) {
+            tempRequests.push(location);
+          }
+        }));
+        console.log(tempRequests);
+        return tempRequests;
+      } else {
+        return fetchedPassengerRequests.map((location) => value.find((item) => item === location.to));
+      }
+    } else {
+      if (value[0] === 'Any') {
+        return fetchedRideRequests;
+      }
+      return fetchedRideRequests.map((location) => value.find(location.from));
+    }
+  }
+
+  updateToFilter = (filter) => {
+
+  }
+
+  render() {
+    const { tripFilter, filteredPassengerRequests, filteredRideRequests, locations, selectedFrom, selectedTo } = this.state;
+    const { handleFromFilterChange, handleToFilterChange, onRadioChange } = this;
+
+    /*const columns = [
+      { title: 'Request', dataIndex: 'request', key: 'request' },
+      { title: 'From', dataIndex: 'from', key: 'from' },
+      { title: 'To', dataIndex: 'to', key: 'to' },
+      { title: 'Date', dataIndex: 'date', key: 'date' },
+      { title: 'Time', dataIndex: 'time', key: 'time' },
+      { title: 'Details', key: 'details', render: () => <a href="javascript:;">Samferða</a> },
+    ];*/
+
+    const columns = [{
+      title: 'From',
+      dataIndex: 'from',
+      key: 'from',
+    }, {
+      title: 'To',
+      dataIndex: 'to',
+      key: 'to',
+    }, {
+      title: 'Date',
+      key: 'date',
+      dataIndex: 'date',
+    }, {
+      title: 'Time',
+      key: 'time',
+      dataIndex: 'time'
+    }, {
+      title: 'Details',
+      key: 'link',
+      dataIndex: 'link'
+    }];
+    
     return (
       <div className="App">
         <header className="App-header">
           <Row type="flex" justify="center">
             <Col span={12}>
-              <h1 style={{color: 'yellow'}}>
+              <h1 style={{color: 'yellow', borderBottom: '1px solid yellow'}}>
                 Carpooling
               </h1>
             </Col>
@@ -71,7 +151,7 @@ class App extends Component {
           <Row type="flex" justify="center">
             <Col span={12}>
               <h1>
-                <Radio.Group onChange={this.onRadioChange} defaultValue="passenger" buttonStyle="solid">
+                <Radio.Group onChange={onRadioChange} defaultValue="passenger" buttonStyle="solid">
                   <Radio.Button value="passenger">Passengers</Radio.Button>
                   <Radio.Button value="ride">Ride</Radio.Button>
                 </Radio.Group>
@@ -113,11 +193,7 @@ class App extends Component {
           </Row>
           <Row type="flex" justify="center">
             <Col span={12}>
-              <Panel 
-                filter={filter}
-                rides={fetchedRideRequests}
-                passengers={fetchedPassengerRequests}
-              />
+              <Table columns={columns} dataSource={tripFilter === 'passenger' ? filteredPassengerRequests : filteredRideRequests}/>
             </Col>
           </Row>
         </header>
@@ -126,17 +202,19 @@ class App extends Component {
   }
 
   componentDidMount() {
+    const { populateLocations } = this;
     let tempDriverLocations = [];
     let tempPassengerLocations = [];
 
     axios.get(`http://apis.is/rides/samferda-drivers/`)
       .then(res => {
         const results = res.data.results;
-
-        tempDriverLocations = this.populateLocations(results, []);
         
+        tempDriverLocations = populateLocations(results, []);
+
         this.setState({
           fetchedRideRequests: results,
+          filteredRideRequests: results
           });
       })
 
@@ -144,14 +222,16 @@ class App extends Component {
       .then(res => {
         const results = res.data.results;
         
-        tempPassengerLocations = this.populateLocations(results, tempDriverLocations);
+        tempPassengerLocations = populateLocations(results, tempDriverLocations);
         
         const totalLocations = [...new Set(tempDriverLocations, tempPassengerLocations)].sort();
-
+        
         this.setState({
           fetchedPassengerRequests: results,
+          filteredPassengerRequests: results,
           locations: totalLocations
         });
+
       })
   }
 }
