@@ -5,7 +5,6 @@ export default class Panel extends Component {
     constructor(props) {
         super(props);
         this.callback = this.callback.bind(this);
-        console.log(props);
     }
 
     callback = function(key) {
@@ -17,7 +16,6 @@ export default class Panel extends Component {
         let { callback } = this;
         let { filter, rides, passengers } = this.props;
 
-        console.log(this.props);
         return (
             <div>
                 <Collapse onChange={callback}>

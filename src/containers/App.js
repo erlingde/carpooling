@@ -14,8 +14,8 @@ class App extends Component {
       fetchedPassengerRequests: [],
       fetchedRideRequests: [],
       locations: [],
-      selectedFrom: [],
-      selectedTo: []
+      selectedFrom: ['Any'],
+      selectedTo: ['Any']
     };
   };
 
@@ -30,39 +30,40 @@ class App extends Component {
     return tempLocations;
   }
 
+  handleFromFilterChange = (value) => {
+    if (value[0] === 'Any') {
+      value[0] = value.pop();
+    } else if (value.length === 0) {
+      value.push('Any');  
+    }
+
+    this.setState({
+      selectedFrom: value
+    });
+  }
+
+  handleToFilterChange = (value) => {
+    if (value[0] === 'Any') {
+      value[0] = value.pop();
+    } else if (value.length === 0) {
+      value.push('Any');  
+    }
+
+    this.setState({
+      selectedTo: value
+    });
+  }
+
   render() {
-    const { filter, fetchedRideRequests, fetchedPassengerRequests, locations } = this.state;
-
-    /*const menu = (
-      <Menu>
-        {locations.map((item) => 
-          <Menu.Item key={item}>
-            <a target="_blank" rel="noopener noreferrer" href="http://www.alipay.com/">{item}</a>
-          </Menu.Item>
-        )}
-      </Menu>
-    );
-
-    const menu = (
-      <Menu>
-        {locations.map((item) => 
-          <Menu.Item key={item}><Icon type="user" />{item}</Menu.Item>
-        )}
-      </Menu>
-    );*/    
-
-    const children = [];
-
-    locations.map((item) =>
-      children.push(<Select.Option key={item}>{item}</Select.Option>)
-    )
+    const { filter, fetchedRideRequests, fetchedPassengerRequests, locations, selectedFrom, selectedTo } = this.state;
+    const { handleFromFilterChange, handleToFilterChange } = this;
 
     return (
       <div className="App">
         <header className="App-header">
           <Row type="flex" justify="center">
             <Col span={12}>
-              <h1>
+              <h1 style={{color: 'yellow'}}>
                 Carpooling
               </h1>
             </Col>
@@ -83,8 +84,15 @@ class App extends Component {
                 mode="multiple"
                 style={{ width: '100%' }}
                 placeholder="From"
+                onChange={handleFromFilterChange}
+                value={selectedFrom}
+                allowClear={true}
+                maxTagCount={2}
+                defaultValue={'All'}
               >
-                {children}
+                {locations.map((item) =>
+                  <Select.Option key={item}>{item}</Select.Option>
+                )}
               </Select>
               </Col>
               <Col span={6}>
@@ -92,8 +100,14 @@ class App extends Component {
                 mode="multiple"
                 style={{ width: '100%' }}
                 placeholder="To"
+                onChange={handleToFilterChange}
+                value={selectedTo}
+                allowClear={true}
+                maxTagCount={2}
               >
-                {children}
+                {locations.map((item) =>
+                  <Select.Option key={item}>{item}</Select.Option>
+                )}
               </Select>
             </Col>
           </Row>
