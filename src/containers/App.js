@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Collapse, Row, Col, Radio, Menu, Icon, Dropdown, AutoComplete, Select } from 'antd';
+import { Row, Col, Radio, Select } from 'antd';
 import axios from 'axios';
 
 import './App.css';
@@ -13,27 +13,25 @@ class App extends Component {
       filter: 'passenger',
       fetchedPassengerRequests: [],
       fetchedRideRequests: [],
-      locations: []
+      locations: [],
+      selectedFrom: [],
+      selectedTo: []
     };
-
-    this.callback = this.callback.bind(this);
   };
 
-  callback = function(key) {
-    console.log(key);
-  }
-  
-
-
-  onRadioChange = (event) => {
-    this.setState((state) => {
-      return {filter: event.target.value}
-    })
+  populateLocations = (results, tempLocations) => {
+    results.forEach((item) => {
+      if (item.from !== "" && !tempLocations.find((x) => item.from === x)) {
+        tempLocations.push(item.from);
+      } else if (item.to !== "" && !tempLocations.find((x) => item.to === x)) {
+        tempLocations.push(item.to);
+      }
+    });
+    return tempLocations;
   }
 
   render() {
-    let { onRadioChange, callback } = this;
-    let { filter, fetchedRideRequests, fetchedPassengerRequests, locations } = this.state;
+    const { filter, fetchedRideRequests, fetchedPassengerRequests, locations } = this.state;
 
     /*const menu = (
       <Menu>
@@ -43,7 +41,7 @@ class App extends Component {
           </Menu.Item>
         )}
       </Menu>
-    );*/
+    );
 
     const menu = (
       <Menu>
@@ -51,7 +49,7 @@ class App extends Component {
           <Menu.Item key={item}><Icon type="user" />{item}</Menu.Item>
         )}
       </Menu>
-    );    
+    );*/    
 
     const children = [];
 
@@ -114,29 +112,31 @@ class App extends Component {
   }
 
   componentDidMount() {
+    let tempDriverLocations = [];
+    let tempPassengerLocations = [];
+
     axios.get(`http://apis.is/rides/samferda-drivers/`)
       .then(res => {
-        let results = res.data.results;
-        let tempLocations = [];
+        const results = res.data.results;
 
-        results.forEach((item) => {
-          if (item.from !== "" && !tempLocations.find((x) => item.from === x)) {
-            tempLocations.push(item.from);
-          } else if (item.to !== "" && !tempLocations.find((x) => item.to === x)) {
-            tempLocations.push(item.to);
-          }
-        });
-
+        tempDriverLocations = this.populateLocations(results, []);
+        
         this.setState({
           fetchedRideRequests: results,
-          locations: tempLocations.sort()
-        });
+          });
       })
 
       axios.get(`http://apis.is/rides/samferda-passengers/`)
       .then(res => {
+        const results = res.data.results;
+        
+        tempPassengerLocations = this.populateLocations(results, tempDriverLocations);
+        
+        const totalLocations = [...new Set(tempDriverLocations, tempPassengerLocations)].sort();
+
         this.setState({
-          fetchedPassengerRequests: res.data.results
+          fetchedPassengerRequests: results,
+          locations: totalLocations
         });
       })
   }
