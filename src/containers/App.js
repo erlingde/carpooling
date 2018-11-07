@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Collapse, Row, Col, Radio, Menu, Icon, Dropdown, AutoComplete } from 'antd';
+import { Button, Collapse, Row, Col, Radio, Menu, Icon, Dropdown, AutoComplete, Select } from 'antd';
 import axios from 'axios';
 
 import './App.css';
@@ -35,7 +35,7 @@ class App extends Component {
     let { onRadioChange, callback } = this;
     let { filter, fetchedRideRequests, fetchedPassengerRequests, locations } = this.state;
 
-    const menu = (
+    /*const menu = (
       <Menu>
         {locations.map((item) => 
           <Menu.Item key={item}>
@@ -43,7 +43,21 @@ class App extends Component {
           </Menu.Item>
         )}
       </Menu>
-    );
+    );*/
+
+    const menu = (
+      <Menu>
+        {locations.map((item) => 
+          <Menu.Item key={item}><Icon type="user" />{item}</Menu.Item>
+        )}
+      </Menu>
+    );    
+
+    const children = [];
+
+    locations.map((item) =>
+      children.push(<Select.Option key={item}>{item}</Select.Option>)
+    )
 
     return (
       <div className="App">
@@ -67,20 +81,22 @@ class App extends Component {
           </Row>
           <Row type="flex" justify="center">
             <Col span={6}>
-              <AutoComplete
-                style={{ width: 100 }}
-                dataSource={locations}
+              <Select
+                mode="multiple"
+                style={{ width: '100%' }}
                 placeholder="From"
-                filterOption={(inputValue, option) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
-              />
-            </Col>
-            <Col span={6}>
-              <AutoComplete
-                style={{ width: 100 }}
-                dataSource={locations}
+              >
+                {children}
+              </Select>
+              </Col>
+              <Col span={6}>
+              <Select
+                mode="multiple"
+                style={{ width: '100%' }}
                 placeholder="To"
-                filterOption={(inputValue, option) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
-              />
+              >
+                {children}
+              </Select>
             </Col>
           </Row>
           <Row type="flex" justify="center">
