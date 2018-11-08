@@ -72,15 +72,15 @@ class App extends Component {
   }
 
   filterLocations = (value, tripWay) => {
-    const { tripFilter, fetchedPassengerRequests, fetchedRideRequests, filteredPassengerRequests } = this.state;
+    const { tripFilter, fetchedPassengerRequests, fetchedRideRequests, filteredPassengerRequests, filteredRideRequests } = this.state;
 
     if (tripFilter === 'passenger') {
       if (value[0] === 'Any') {
         return fetchedPassengerRequests;
       }
-      if (tripWay === 'from') {
-        let tempRequests = [];
+      let tempRequests = [];
 
+      if (tripWay === 'from') {
         filteredPassengerRequests.forEach((location) => value.find((item) => {
           if (item === location.from) {
             tempRequests.push(location);
@@ -89,13 +89,31 @@ class App extends Component {
         console.log(tempRequests);
         return tempRequests;
       } else {
-        return fetchedPassengerRequests.map((location) => value.find((item) => item === location.to));
+        filteredPassengerRequests.forEach((location) => value.find((item) => {
+          if (item === location.to) {
+            tempRequests.push(location);
+          }
+        }));
+        console.log(tempRequests);
+        return tempRequests;
       }
     } else {
       if (value[0] === 'Any') {
         return fetchedRideRequests;
       }
-      return fetchedRideRequests.map((location) => value.find(location.from));
+      let tempRequests = [];
+
+      if (tripWay === 'from') {
+        filteredRideRequests.forEach((location) => value.find((item) => {
+          if (item === location.from) {
+            tempRequests.push(location);
+          }
+        }));
+        console.log(tempRequests);
+        return tempRequests;
+      } else {
+        return fetchedRideRequests.map((location) => value.find((item) => item === location.to));
+      }
     }
   }
 
