@@ -14,8 +14,7 @@ class App extends Component {
       fetchedPassengerRequests: [],
       fetchedRideRequests: [],
       locations: [],
-      filteredPassengerRequests: [],
-      filteredRideRequests: [],
+      filteredTrips: [],
       selectedFrom: ['Any'],
       selectedTo: ['Any']
     };
@@ -36,15 +35,14 @@ class App extends Component {
     if (value[0] === 'Any') {
       value[0] = value.pop();
     } else if (value.length === 0) {
-      value.push('Any');  
+      value.push('Any');
     }
 
     let filteredLocations = this.filterLocations(value, 'from');
-    console.log(filteredLocations);
 
     this.setState({
       selectedFrom: value,
-      filteredPassengerRequests: filteredLocations
+      filteredTrips: filteredLocations
     });
   }
 
@@ -53,58 +51,54 @@ class App extends Component {
       value[0] = value.pop();
     } else if (value.length === 0) {
       value.push('Any');
+      return;
     }
 
-    const filteredLocations = this.filterLocations(value, 'to');
+    let filteredLocations = this.filterLocations(value, 'to');
 
     this.setState({
       selectedTo: value,
-      filterToLocations: filteredLocations
+      filteredTrips: filteredLocations
     });
   }
 
   onRadioChange = (event) => {
-    this.setState({
+    const { fetchedRideRequests, fetchedPassengerRequests } = this.state;
+    this.setState({ 
       selectedFrom: ['Any'],
       selectedTo: ['Any'],
+      filteredTrips: event.target.value === 'ride' ? fetchedRideRequests : fetchedPassengerRequests,
       tripFilter: event.target.value
     });
   }
 
   filterLocations = (value, tripWay) => {
     const { tripFilter, fetchedPassengerRequests, fetchedRideRequests, filteredPassengerRequests } = this.state;
+    let tempRequests = [];
 
-    if (tripFilter === 'passenger') {
-      if (value[0] === 'Any') {
-        return fetchedPassengerRequests;
-      }
-      if (tripWay === 'from') {
-        let tempRequests = [];
-
-        filteredPassengerRequests.forEach((location) => value.find((item) => {
-          if (item === location.from) {
-            tempRequests.push(location);
-          }
-        }));
-        console.log(tempRequests);
-        return tempRequests;
-      } else {
-        return fetchedPassengerRequests.map((location) => value.find((item) => item === location.to));
-      }
-    } else {
-      if (value[0] === 'Any') {
-        return fetchedRideRequests;
-      }
-      return fetchedRideRequests.map((location) => value.find(location.from));
+    if (value[0] === 'Any') {
+      return tripFilter === 'passenger' ? fetchedPassengerRequests : fetchedRideRequests;
     }
-  }
+    
+    if (tripFilter === 'ride') {
+      fetchedRideRequests.forEach((location) => value.find((item) => {
+        if (tripWay === 'from' ? item === location.from : item === location.to) {
+          tempRequests.push(location);
+        }
+      }));
+    } else {
+      fetchedPassengerRequests.forEach((location) => value.find((item) => {
+        if (tripWay === 'from' ? item === location.from : item === location.to) {
+          tempRequests.push(location);
+        }
+      }));
+    }
 
-  updateToFilter = (filter) => {
-
+    return tempRequests;
   }
 
   render() {
-    const { tripFilter, filteredPassengerRequests, filteredRideRequests, locations, selectedFrom, selectedTo } = this.state;
+    const { filteredTrips, locations, selectedFrom, selectedTo } = this.state;
     const { handleFromFilterChange, handleToFilterChange, onRadioChange } = this;
 
     /*const columns = [
@@ -193,7 +187,7 @@ class App extends Component {
           </Row>
           <Row type="flex" justify="center">
             <Col span={12}>
-              <Table columns={columns} dataSource={tripFilter === 'passenger' ? filteredPassengerRequests : filteredRideRequests}/>
+              <Table columns={columns} dataSource={filteredTrips}/>
             </Col>
           </Row>
         </header>
@@ -213,22 +207,22 @@ class App extends Component {
         tempDriverLocations = populateLocations(results, []);
 
         this.setState({
-          fetchedRideRequests: results,
-          filteredRideRequests: results
+          fetchedRideRequests: results
           });
       })
 
       axios.get(`http://apis.is/rides/samferda-passengers/`)
       .then(res => {
         const results = res.data.results;
+        let totalLocations;
         
         tempPassengerLocations = populateLocations(results, tempDriverLocations);
         
-        const totalLocations = [...new Set(tempDriverLocations, tempPassengerLocations)].sort();
+        totalLocations = [...new Set(tempDriverLocations, tempPassengerLocations)].sort();
         
         this.setState({
           fetchedPassengerRequests: results,
-          filteredPassengerRequests: results,
+          filteredTrips: results,
           locations: totalLocations
         });
 
