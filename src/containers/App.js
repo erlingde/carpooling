@@ -64,6 +64,7 @@ class App extends Component {
 
   onRadioChange = (event) => {
     const { fetchedRideRequests, fetchedPassengerRequests } = this.state;
+
     this.setState({ 
       selectedFrom: ['Any'],
       selectedTo: ['Any'],
@@ -73,7 +74,7 @@ class App extends Component {
   }
 
   filterLocations = (value, tripWay) => {
-    const { tripFilter, fetchedPassengerRequests, fetchedRideRequests, filteredPassengerRequests } = this.state;
+    const { tripFilter, fetchedPassengerRequests, fetchedRideRequests } = this.state;
     let tempRequests = [];
 
     if (value[0] === 'Any') {
@@ -85,12 +86,14 @@ class App extends Component {
         if (tripWay === 'from' ? item === location.from : item === location.to) {
           tempRequests.push(location);
         }
+        return null;
       }));
     } else {
       fetchedPassengerRequests.forEach((location) => value.find((item) => {
         if (tripWay === 'from' ? item === location.from : item === location.to) {
           tempRequests.push(location);
         }
+        return null;
       }));
     }
 
@@ -110,35 +113,13 @@ class App extends Component {
       { title: 'Details', key: 'details', render: () => <a href="javascript:;">Samferða</a> },
     ];*/
 
-    const columns = [{
-      title: 'From',
-      dataIndex: 'from',
-      key: 'from',
-    }, {
-      title: 'To',
-      dataIndex: 'to',
-      key: 'to',
-    }, {
-      title: 'Date',
-      key: 'date',
-      dataIndex: 'date',
-    }, {
-      title: 'Time',
-      key: 'time',
-      dataIndex: 'time'
-    }, {
-      title: 'Details',
-      key: 'link',
-      dataIndex: 'link'
-    }];
-    
     return (
       <div className="App">
         <header className="App-header">
           <Row type="flex" justify="center">
             <Col span={12}>
               <h1 style={{color: 'yellow', borderBottom: '1px solid yellow'}}>
-                Carpooling
+                Carpooling in Iceland
               </h1>
             </Col>
           </Row>
@@ -187,7 +168,7 @@ class App extends Component {
           </Row>
           <Row type="flex" justify="center">
             <Col span={12}>
-              <Table columns={columns} dataSource={filteredTrips}/>
+              <Table columns={columns} dataSource={filteredTrips} style={{'backgroundColor': '#e9ebee'}} />
             </Col>
           </Row>
         </header>
@@ -202,8 +183,12 @@ class App extends Component {
 
     axios.get(`http://apis.is/rides/samferda-drivers/`)
       .then(res => {
-        const results = res.data.results;
-        
+        let results = res.data.results;
+
+        results.forEach((item) => {
+          item.key = item.link
+        });
+
         tempDriverLocations = populateLocations(results, []);
 
         this.setState({
@@ -213,9 +198,13 @@ class App extends Component {
 
       axios.get(`http://apis.is/rides/samferda-passengers/`)
       .then(res => {
-        const results = res.data.results;
+        let results = res.data.results;
         let totalLocations;
-        
+
+        results.forEach((item) => {
+          item.key = item.link
+        });
+
         tempPassengerLocations = populateLocations(results, tempDriverLocations);
         
         totalLocations = [...new Set(tempDriverLocations, tempPassengerLocations)].sort();
@@ -229,5 +218,32 @@ class App extends Component {
       })
   }
 }
+
+const columns = [{
+  title: 'From',
+  dataIndex: 'from',
+  key: 'from',
+}, {
+  title: 'To',
+  dataIndex: 'to',
+  key: 'to',
+}, {
+  title: 'Date',
+  key: 'date',
+  dataIndex: 'date',
+}, {
+  title: 'Time',
+  key: 'time',
+  dataIndex: 'time'
+}, {
+  title: 'Details',
+  key: 'link',
+  dataIndex: 'link',
+  render: (text, record) => (
+    <span>
+      <a href={record.link}>Details</a>
+    </span>
+  )
+}];
 
 export default App;
