@@ -16,7 +16,8 @@ class App extends Component {
       locations: [],
       filteredTrips: [],
       selectedFrom: ['Any'],
-      selectedTo: ['Any']
+      selectedTo: ['Any'],
+      tableLoading: true
     };
   };
 
@@ -101,7 +102,7 @@ class App extends Component {
   }
 
   render() {
-    const { filteredTrips, locations, selectedFrom, selectedTo } = this.state;
+    const { filteredTrips, locations, selectedFrom, selectedTo, tableLoading } = this.state;
     const { handleFromFilterChange, handleToFilterChange, onRadioChange } = this;
 
     return (
@@ -159,7 +160,12 @@ class App extends Component {
           </Row>
           <Row type="flex" justify="center">
             <Col span={12}>
-              <Table columns={columns} dataSource={filteredTrips} style={{'backgroundColor': '#e9ebee'}} />
+              <Table
+                columns={columns}
+                dataSource={filteredTrips}
+                loading={tableLoading}
+                style={{'backgroundColor': '#e9ebee'}}
+              />
             </Col>
           </Row>
         </header>
@@ -203,7 +209,8 @@ class App extends Component {
         this.setState({
           fetchedPassengerRequests: results,
           filteredTrips: results,
-          locations: totalLocations
+          locations: totalLocations,
+          tableLoading: false
         });
 
       })
