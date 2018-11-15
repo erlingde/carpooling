@@ -15,8 +15,8 @@ class App extends Component {
       fetchedRideRequests: [],
       locations: [],
       filteredTrips: [],
-      selectedFrom: ['Any'],
-      selectedTo: ['Any'],
+      selectedFrom: [],
+      selectedTo: [],
       tableLoading: true
     };
   };
@@ -33,13 +33,9 @@ class App extends Component {
   }
 
   handleFromFilterChange = (value) => {
-    if (value[0] === 'Any') {
-      value[0] = value.pop();
-    } else if (value.length === 0) {
-      value.push('Any');
-    }
+    const { filterLocations } = this;
 
-    let filteredLocations = this.filterLocations(value, 'from');
+    const filteredLocations = filterLocations(value, 'from');
 
     this.setState({
       selectedFrom: value,
@@ -48,14 +44,9 @@ class App extends Component {
   }
 
   handleToFilterChange = (value) => {
-    if (value[0] === 'Any') {
-      value[0] = value.pop();
-    } else if (value.length === 0) {
-      value.push('Any');
-      return;
-    }
-
-    let filteredLocations = this.filterLocations(value, 'to');
+    const { filterLocations } = this;
+    
+    const filteredLocations = filterLocations(value, 'to');
 
     this.setState({
       selectedTo: value,
@@ -67,8 +58,8 @@ class App extends Component {
     const { fetchedRideRequests, fetchedPassengerRequests } = this.state;
 
     this.setState({ 
-      selectedFrom: ['Any'],
-      selectedTo: ['Any'],
+      selectedFrom: [],
+      selectedTo: [],
       filteredTrips: event.target.value === 'ride' ? fetchedRideRequests : fetchedPassengerRequests,
       tripFilter: event.target.value
     });
@@ -78,7 +69,7 @@ class App extends Component {
     const { tripFilter, fetchedPassengerRequests, fetchedRideRequests } = this.state;
     let tempRequests = [];
 
-    if (value[0] === 'Any') {
+    if (value.length === 0) {
       return tripFilter === 'passenger' ? fetchedPassengerRequests : fetchedRideRequests;
     }
     
