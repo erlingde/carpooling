@@ -104,15 +104,6 @@ class App extends Component {
     const { filteredTrips, locations, selectedFrom, selectedTo } = this.state;
     const { handleFromFilterChange, handleToFilterChange, onRadioChange } = this;
 
-    /*const columns = [
-      { title: 'Request', dataIndex: 'request', key: 'request' },
-      { title: 'From', dataIndex: 'from', key: 'from' },
-      { title: 'To', dataIndex: 'to', key: 'to' },
-      { title: 'Date', dataIndex: 'date', key: 'date' },
-      { title: 'Time', dataIndex: 'time', key: 'time' },
-      { title: 'Details', key: 'details', render: () => <a href="javascript:;">Samferða</a> },
-    ];*/
-
     return (
       <div className="App">
         <header className="App-header">
@@ -241,7 +232,7 @@ const columns = [{
   dataIndex: 'link',
   render: (text, record) => (
     <span>
-      <a href={record.link}>Details</a>
+      <a href={record.link} rel="noopener noreferrer" target="_blank">Details</a>
     </span>
   )
 }];
