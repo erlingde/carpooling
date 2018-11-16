@@ -1,4 +1,5 @@
 import React from 'react';
+import { Icon, Tooltip } from 'antd';
 
 const columns = [{
     title: 'From',
@@ -13,11 +14,23 @@ const columns = [{
     key: 'date',
     dataIndex: 'date',
   }, {
-    title: 'Time',
+    title: () => (
+      <span>
+        <Tooltip title="Time">
+          <Icon type="clock-circle"/>
+        </Tooltip>
+      </span>
+    ),
     key: 'time',
     dataIndex: 'time'
   }, {
-    title: 'Details',
+    title: () => (
+      <span>
+        <Tooltip title="Information">
+          <Icon type="info-circle"/>
+        </Tooltip>
+      </span>
+    ),
     key: 'link',
     dataIndex: 'link',
     render: (text, record) => (
