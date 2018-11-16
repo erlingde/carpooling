@@ -11,7 +11,7 @@ class App extends Component {
     super(props);
 
     this.state = {
-      tripFilter: 'passenger',
+      tripFilter: 'ride',
       fetchedPassengerRequests: [],
       fetchedRideRequests: [],
       locations: [],
@@ -66,10 +66,6 @@ class App extends Component {
       tripFilter: event.target.value
     });
   }
-  
-  handleRefreshClick = (event) => {
-    console.log(event);
-  }
 
   handleRefreshHover = (event) => {
     const { refreshIconHover } = this.state;
@@ -106,8 +102,9 @@ class App extends Component {
     return tempRequests;
   }
 
-  fetchData = async () => {
-    const { populateLocations, tripFilter } = this;
+  fetchData = () => {
+    const { tripFilter } = this.state;
+    const { populateLocations } = this;
 
     this.setState({
       fetchedPassengerRequests: [],
@@ -116,47 +113,47 @@ class App extends Component {
       selectedTo: [],
       filteredTrips: [],
       tableLoading: true
-    });
+    }, async () => {
+      await api.fetchRideRequests().then(res => {
+        let driverRequests = res[0].data.results;
+        let passengerRequests = res[1].data.results;
+  
+        [...passengerRequests, ...driverRequests].forEach((item) => {
+          item.key = item.link
+        });
+  
+        const totalLocations = populateLocations([...driverRequests, ...passengerRequests], []);
 
-    await api.fetchRideRequests().then(res => {
-      let driverRequests = res[0].data.results;
-      let passengerRequests = res[1].data.results;
-
-      [...passengerRequests, ...driverRequests].forEach((item) => {
-        item.key = item.link
-      });
-
-      const totalLocations = populateLocations([...driverRequests, ...passengerRequests], []);
-
-      this.setState({
-        fetchedPassengerRequests: passengerRequests,
-        fetchedRideRequests: driverRequests,
-        filteredTrips: tripFilter === 'passenger' ? passengerRequests : driverRequests,
-        locations: totalLocations.sort(),
-        tableLoading: false
+        this.setState({
+          fetchedPassengerRequests: passengerRequests,
+          fetchedRideRequests: driverRequests,
+          filteredTrips: tripFilter === 'passenger' ? passengerRequests : driverRequests,
+          locations: totalLocations.sort(),
+          tableLoading: false
+        });
       });
     });
   }
 
   render() {
     const { filteredTrips, locations, selectedFrom, selectedTo, tableLoading, refreshIconHover } = this.state;
-    const { handleFromFilterChange, handleToFilterChange, onRadioChange, fetchData, handleRefreshHover } = this;
+    const { handleFromFilterChange, handleToFilterChange, onRadioChange, fetchData, handleRefreshHover, tripFilter } = this;
 
     return (
       <div className="App">
         <header className="App-header">
           <Row type="flex" justify="center">
-            <Col span={12}>
+            <Col xs={24} md={20} lg={18} xl={14}>
               <h1 style={{color: 'yellow', borderBottom: '1px solid yellow'}}>
                 Carpooling in Iceland
               </h1>
             </Col>
           </Row>
           <Row type="flex" justify="center">
-            <Col span={12}>
+            <Col xs={24} md={20} lg={18} xl={14}>
               <Radio.Group onChange={onRadioChange} defaultValue="ride" buttonStyle="solid" style={{'verticalAlign': 'top'}}>
-                <Radio.Button value="ride">Ride</Radio.Button>
-                <Radio.Button value="passenger">Passengers</Radio.Button>
+                <Radio.Button value="ride" checked={tripFilter === 'ride' ? true : false}>Ride</Radio.Button>
+                <Radio.Button value="passenger"checked={tripFilter === 'passenger' ? true : false}>Passengers</Radio.Button>
               </Radio.Group>
               <Icon
                 type="reload"
@@ -169,7 +166,7 @@ class App extends Component {
             </Col>
           </Row>
           <Row type="flex" justify="center">
-            <Col span={6}>
+            <Col xs={12} md={10} lg={9} xl={7}>
               <Select
                 mode="multiple"
                 style={{ width: '100%' }}
@@ -184,8 +181,8 @@ class App extends Component {
                   <Select.Option key={item}>{item}</Select.Option>
                 )}
               </Select>
-              </Col>
-              <Col span={6}>
+            </Col>
+            <Col xs={12} md={10} lg={9} xl={7}>
               <Select
                 mode="multiple"
                 style={{ width: '100%' }}
@@ -195,14 +192,14 @@ class App extends Component {
                 allowClear={true}
                 maxTagCount={2}
               >
-                {locations.map((item) =>
-                  <Select.Option key={item}>{item}</Select.Option>
-                )}
-              </Select>
-            </Col>
+              {locations.map((item) =>
+                <Select.Option key={item}>{item}</Select.Option>
+              )}
+            </Select>
+          </Col>
           </Row>
           <Row type="flex" justify="center">
-            <Col span={12}>
+            <Col xs={24} md={20} lg={18} xl={14}>
               <Table
                 columns={columns}
                 dataSource={filteredTrips}
