@@ -122,11 +122,7 @@ class App extends Component {
       let driverRequests = res[0].data.results;
       let passengerRequests = res[1].data.results;
 
-      driverRequests.forEach((item) => {
-        item.key = item.link
-      });
-
-      passengerRequests.forEach((item) => {
+      [...passengerRequests, ...driverRequests].forEach((item) => {
         item.key = item.link
       });
 
@@ -136,7 +132,7 @@ class App extends Component {
         fetchedPassengerRequests: passengerRequests,
         fetchedRideRequests: driverRequests,
         filteredTrips: tripFilter === 'passenger' ? passengerRequests : driverRequests,
-        locations: totalLocations,
+        locations: totalLocations.sort(),
         tableLoading: false
       });
     });
