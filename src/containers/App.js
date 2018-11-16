@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Radio, Select, Table, Icon } from 'antd';
+import { Row, Col, Radio, Select, Table, Icon, Tooltip } from 'antd';
 
 import api from '../services/api';
 import columns from '../constants/columns'
@@ -152,17 +152,23 @@ class App extends Component {
           <Row type="flex" justify="center">
             <Col xs={24} md={20} lg={18} xl={14}>
               <Radio.Group onChange={onRadioChange} defaultValue="ride" buttonStyle="solid" style={{'verticalAlign': 'top'}}>
-                <Radio.Button value="ride" checked={tripFilter === 'ride' ? true : false}>Ride</Radio.Button>
-                <Radio.Button value="passenger"checked={tripFilter === 'passenger' ? true : false}>Passengers</Radio.Button>
+              <Tooltip title="Passengers seeking a ride">
+                  <Radio.Button value="ride" checked={tripFilter === 'ride' ? true : false}>Ride</Radio.Button>
+              </Tooltip>
+              <Tooltip title="Drivers seeking for passengers">
+                  <Radio.Button value="passenger"checked={tripFilter === 'passenger' ? true : false}>Passengers</Radio.Button>
+              </Tooltip>
               </Radio.Group>
-              <Icon
-                type="reload"
-                spin={refreshIconHover}
-                style={{ 'float': 'right','marginRight': '15px' , 'cursor': 'pointer'}}
-                onClick={fetchData}
-                onMouseEnter={handleRefreshHover}
-                onMouseLeave={handleRefreshHover}
-              />
+              <Tooltip title="Refresh data">
+                <Icon
+                  type="reload"
+                  spin={refreshIconHover}
+                  style={{ 'float': 'right','marginRight': '15px' , 'cursor': 'pointer'}}
+                  onClick={fetchData}
+                  onMouseEnter={handleRefreshHover}
+                  onMouseLeave={handleRefreshHover}
+                />
+              </Tooltip>
             </Col>
           </Row>
           <Row type="flex" justify="center">
