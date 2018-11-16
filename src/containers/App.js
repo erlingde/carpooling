@@ -107,11 +107,14 @@ class App extends Component {
   }
 
   fetchData = async () => {
-    const { populateLocations } = this;
+    const { populateLocations, tripFilter } = this;
 
     this.setState({
       fetchedPassengerRequests: [],
       fetchedRideRequests: [],
+      selectedFrom: [],
+      selectedTo: [],
+      filteredTrips: [],
       tableLoading: true
     });
 
@@ -132,7 +135,7 @@ class App extends Component {
       this.setState({
         fetchedPassengerRequests: passengerRequests,
         fetchedRideRequests: driverRequests,
-        filteredTrips: passengerRequests,
+        filteredTrips: tripFilter === 'passenger' ? passengerRequests : driverRequests,
         locations: totalLocations,
         tableLoading: false
       });
@@ -155,9 +158,9 @@ class App extends Component {
           </Row>
           <Row type="flex" justify="center">
             <Col span={12}>
-              <Radio.Group onChange={onRadioChange} defaultValue="passenger" buttonStyle="solid" style={{'verticalAlign': 'top'}}>
-                <Radio.Button value="passenger">Passengers</Radio.Button>
+              <Radio.Group onChange={onRadioChange} defaultValue="ride" buttonStyle="solid" style={{'verticalAlign': 'top'}}>
                 <Radio.Button value="ride">Ride</Radio.Button>
+                <Radio.Button value="passenger">Passengers</Radio.Button>
               </Radio.Group>
               <Icon
                 type="reload"
