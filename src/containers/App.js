@@ -151,17 +151,23 @@ class App extends Component {
           </Row>
           <Row type="flex" justify="center">
             <Col xs={24} md={20} lg={18} xl={14}>
-              <Radio.Group onChange={onRadioChange} defaultValue="ride" buttonStyle="solid" style={{'verticalAlign': 'top'}}>
+              <Radio.Group size="large" onChange={onRadioChange} defaultValue="ride" buttonStyle="solid" style={{'verticalAlign': 'top'}}>
               <Tooltip title="Passengers seeking a ride">
-                  <Radio.Button value="ride" checked={tripFilter === 'ride' ? true : false}>Ride</Radio.Button>
+                  <Radio.Button value="ride" checked={tripFilter === 'ride' ? true : false}>
+                    Ride
+                    <Icon type="car" style={{'marginLeft': '6px'}}/>
+                  </Radio.Button>
               </Tooltip>
               <Tooltip title="Drivers seeking for passengers">
-                  <Radio.Button value="passenger"checked={tripFilter === 'passenger' ? true : false}>Passengers</Radio.Button>
+                  <Radio.Button value="passenger"checked={tripFilter === 'passenger' ? true : false}>
+                      Passengers
+                      <Icon type="user-add" style={{'marginLeft': '6px'}}/>
+                    </Radio.Button>
               </Tooltip>
               </Radio.Group>
-              <Tooltip title="Refresh data">
+              <Tooltip title="Refresh">
                 <Icon
-                  type="reload"
+                  type="sync"
                   spin={refreshIconHover}
                   style={{ 'float': 'right','marginRight': '15px' , 'cursor': 'pointer'}}
                   onClick={fetchData}
