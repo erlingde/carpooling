@@ -17,7 +17,7 @@ const columns = [{
     title: () => (
       <span>
         <Tooltip title="Time">
-          <Icon type="clock-circle" style={{'marginLeft': '6px'}}/>
+          <Icon type="clock-circle"/>
         </Tooltip>
       </span>
     ),
@@ -27,7 +27,7 @@ const columns = [{
     title: () => (
       <span>
         <Tooltip title="Information">
-          <Icon type="info-circle" style={{'marginLeft': '6px'}}/>
+          <Icon type="info-circle"/>
         </Tooltip>
       </span>
     ),

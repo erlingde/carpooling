@@ -152,13 +152,13 @@ class App extends Component {
           <Row type="flex" justify="center">
             <Col xs={24} md={20} lg={18} xl={14}>
               <Radio.Group size="large" onChange={onRadioChange} defaultValue="ride" buttonStyle="solid" style={{'verticalAlign': 'top'}}>
-              <Tooltip title="Passengers seeking a ride">
+              <Tooltip title="Passengers seeking rides">
                   <Radio.Button value="ride" checked={tripFilter === 'ride' ? true : false}>
                     Ride
                     <Icon type="car" style={{'marginLeft': '6px'}}/>
                   </Radio.Button>
               </Tooltip>
-              <Tooltip title="Drivers seeking for passengers">
+              <Tooltip title="Drivers seeking passengers">
                   <Radio.Button value="passenger"checked={tripFilter === 'passenger' ? true : false}>
                       Passengers
                       <Icon type="user-add" style={{'marginLeft': '6px'}}/>
