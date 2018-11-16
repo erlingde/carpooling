@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Radio, Select, Table, Divider, Tag } from 'antd';
+import { Row, Col, Radio, Select, Table, Icon } from 'antd';
 import axios from 'axios';
 
 import './App.css';
@@ -17,7 +17,8 @@ class App extends Component {
       filteredTrips: [],
       selectedFrom: [],
       selectedTo: [],
-      tableLoading: true
+      tableLoading: true,
+      refreshIconHover: false
     };
   };
 
@@ -64,6 +65,18 @@ class App extends Component {
       tripFilter: event.target.value
     });
   }
+  
+  handleRefreshClick = (event) => {
+    console.log(event);
+  }
+
+  handleRefreshHover = (event) => {
+    const { refreshIconHover } = this.state;
+
+    this.setState({
+      refreshIconHover: !refreshIconHover
+    });
+  }
 
   filterLocations = (value, tripWay) => {
     const { tripFilter, fetchedPassengerRequests, fetchedRideRequests } = this.state;
@@ -93,8 +106,8 @@ class App extends Component {
   }
 
   render() {
-    const { filteredTrips, locations, selectedFrom, selectedTo, tableLoading } = this.state;
-    const { handleFromFilterChange, handleToFilterChange, onRadioChange } = this;
+    const { filteredTrips, locations, selectedFrom, selectedTo, tableLoading, refreshIconHover } = this.state;
+    const { handleFromFilterChange, handleToFilterChange, onRadioChange, handleRefreshClick, handleRefreshHover } = this;
 
     return (
       <div className="App">
@@ -108,12 +121,18 @@ class App extends Component {
           </Row>
           <Row type="flex" justify="center">
             <Col span={12}>
-              <h1>
-                <Radio.Group onChange={onRadioChange} defaultValue="passenger" buttonStyle="solid">
-                  <Radio.Button value="passenger">Passengers</Radio.Button>
-                  <Radio.Button value="ride">Ride</Radio.Button>
-                </Radio.Group>
-              </h1>
+              <Radio.Group onChange={onRadioChange} defaultValue="passenger" buttonStyle="solid" style={{'verticalAlign': 'top'}}>
+                <Radio.Button value="passenger">Passengers</Radio.Button>
+                <Radio.Button value="ride">Ride</Radio.Button>
+              </Radio.Group>
+              <Icon
+                type="reload"
+                spin={refreshIconHover}
+                style={{ 'float': 'right','marginRight': '15px' , 'cursor': 'pointer'}}
+                onClick={handleRefreshClick}
+                onMouseEnter={handleRefreshHover}
+                onMouseLeave={handleRefreshHover}
+              />
             </Col>
           </Row>
           <Row type="flex" justify="center">
