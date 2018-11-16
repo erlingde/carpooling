@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { Row, Col, Radio, Select, Table, Divider, Tag } from 'antd';
-import axios from 'axios';
+import { Row, Col, Radio, Select, Table, Icon } from 'antd';
+
+import api from '../services/api';
+import columns from '../constants/columns'
 
 import './App.css';
-import Panel from '../components/Panel';
 
 class App extends Component {
   constructor(props) {
@@ -17,7 +18,8 @@ class App extends Component {
       filteredTrips: [],
       selectedFrom: [],
       selectedTo: [],
-      tableLoading: true
+      tableLoading: true,
+      refreshIconHover: false
     };
   };
 
@@ -64,6 +66,18 @@ class App extends Component {
       tripFilter: event.target.value
     });
   }
+  
+  handleRefreshClick = (event) => {
+    console.log(event);
+  }
+
+  handleRefreshHover = (event) => {
+    const { refreshIconHover } = this.state;
+
+    this.setState({
+      refreshIconHover: !refreshIconHover
+    });
+  }
 
   filterLocations = (value, tripWay) => {
     const { tripFilter, fetchedPassengerRequests, fetchedRideRequests } = this.state;
@@ -92,9 +106,41 @@ class App extends Component {
     return tempRequests;
   }
 
+  fetchData = async () => {
+    const { populateLocations, tripFilter } = this;
+
+    this.setState({
+      fetchedPassengerRequests: [],
+      fetchedRideRequests: [],
+      selectedFrom: [],
+      selectedTo: [],
+      filteredTrips: [],
+      tableLoading: true
+    });
+
+    await api.fetchRideRequests().then(res => {
+      let driverRequests = res[0].data.results;
+      let passengerRequests = res[1].data.results;
+
+      [...passengerRequests, ...driverRequests].forEach((item) => {
+        item.key = item.link
+      });
+
+      const totalLocations = populateLocations([...driverRequests, ...passengerRequests], []);
+
+      this.setState({
+        fetchedPassengerRequests: passengerRequests,
+        fetchedRideRequests: driverRequests,
+        filteredTrips: tripFilter === 'passenger' ? passengerRequests : driverRequests,
+        locations: totalLocations.sort(),
+        tableLoading: false
+      });
+    });
+  }
+
   render() {
-    const { filteredTrips, locations, selectedFrom, selectedTo, tableLoading } = this.state;
-    const { handleFromFilterChange, handleToFilterChange, onRadioChange } = this;
+    const { filteredTrips, locations, selectedFrom, selectedTo, tableLoading, refreshIconHover } = this.state;
+    const { handleFromFilterChange, handleToFilterChange, onRadioChange, fetchData, handleRefreshHover } = this;
 
     return (
       <div className="App">
@@ -108,12 +154,18 @@ class App extends Component {
           </Row>
           <Row type="flex" justify="center">
             <Col span={12}>
-              <h1>
-                <Radio.Group onChange={onRadioChange} defaultValue="passenger" buttonStyle="solid">
-                  <Radio.Button value="passenger">Passengers</Radio.Button>
-                  <Radio.Button value="ride">Ride</Radio.Button>
-                </Radio.Group>
-              </h1>
+              <Radio.Group onChange={onRadioChange} defaultValue="ride" buttonStyle="solid" style={{'verticalAlign': 'top'}}>
+                <Radio.Button value="ride">Ride</Radio.Button>
+                <Radio.Button value="passenger">Passengers</Radio.Button>
+              </Radio.Group>
+              <Icon
+                type="reload"
+                spin={refreshIconHover}
+                style={{ 'float': 'right','marginRight': '15px' , 'cursor': 'pointer'}}
+                onClick={fetchData}
+                onMouseEnter={handleRefreshHover}
+                onMouseLeave={handleRefreshHover}
+              />
             </Col>
           </Row>
           <Row type="flex" justify="center">
@@ -164,75 +216,11 @@ class App extends Component {
     );
   }
 
-  componentDidMount() {
-    const { populateLocations } = this;
-    let tempDriverLocations = [];
-    let tempPassengerLocations = [];
+   componentDidMount() {
+    const { fetchData } = this;
 
-    axios.get(`http://apis.is/rides/samferda-drivers/`)
-      .then(res => {
-        let results = res.data.results;
-
-        results.forEach((item) => {
-          item.key = item.link
-        });
-
-        tempDriverLocations = populateLocations(results, []);
-
-        this.setState({
-          fetchedRideRequests: results
-          });
-      })
-
-      axios.get(`http://apis.is/rides/samferda-passengers/`)
-      .then(res => {
-        let results = res.data.results;
-        let totalLocations;
-
-        results.forEach((item) => {
-          item.key = item.link
-        });
-
-        tempPassengerLocations = populateLocations(results, tempDriverLocations);
-        
-        totalLocations = [...new Set(tempDriverLocations, tempPassengerLocations)].sort();
-        
-        this.setState({
-          fetchedPassengerRequests: results,
-          filteredTrips: results,
-          locations: totalLocations,
-          tableLoading: false
-        });
-
-      })
+    fetchData();
   }
 }
-
-const columns = [{
-  title: 'From',
-  dataIndex: 'from',
-  key: 'from',
-}, {
-  title: 'To',
-  dataIndex: 'to',
-  key: 'to',
-}, {
-  title: 'Date',
-  key: 'date',
-  dataIndex: 'date',
-}, {
-  title: 'Time',
-  key: 'time',
-  dataIndex: 'time'
-}, {
-  title: 'Details',
-  key: 'link',
-  dataIndex: 'link',
-  render: (text, record) => (
-    <span>
-      <a href={record.link} rel="noopener noreferrer" target="_blank">Details</a>
-    </span>
-  )
-}];
 
 export default App;
