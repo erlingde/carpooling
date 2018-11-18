@@ -10,14 +10,15 @@ class App extends Component {
   constructor(props) {
     super(props);
 
+    this.selectedFilterFrom = [];
+    this.selectedFilterTo = [];
+    
     this.state = {
       tripFilter: 'ride',
       fetchedPassengerRequests: [],
       fetchedRideRequests: [],
       locations: [],
       filteredTrips: [],
-      selectedFrom: [],
-      selectedTo: [],
       tableLoading: true,
       refreshIconHover: false
     };
@@ -31,37 +32,17 @@ class App extends Component {
         tempLocations.push(item.to);
       }
     });
+
     return tempLocations;
-  }
-
-  handleFromFilterChange = (value) => {
-    const { filterLocations } = this;
-
-    const filteredLocations = filterLocations(value, 'from');
-
-    this.setState({
-      selectedFrom: value,
-      filteredTrips: filteredLocations
-    });
-  }
-
-  handleToFilterChange = (value) => {
-    const { filterLocations } = this;
-    
-    const filteredLocations = filterLocations(value, 'to');
-
-    this.setState({
-      selectedTo: value,
-      filteredTrips: filteredLocations
-    });
   }
 
   onRadioChange = (event) => {
     const { fetchedRideRequests, fetchedPassengerRequests } = this.state;
 
-    this.setState({ 
-      selectedFrom: [],
-      selectedTo: [],
+    this.selectedFilterFrom = [];
+    this.selectedFilterTo = [];
+
+    this.setState({
       filteredTrips: event.target.value === 'ride' ? fetchedRideRequests : fetchedPassengerRequests,
       tripFilter: event.target.value
     });
@@ -75,29 +56,46 @@ class App extends Component {
     });
   }
 
-  filterLocations = (value, tripWay) => {
-    const { tripFilter, fetchedPassengerRequests, fetchedRideRequests } = this.state;
-    let tempRequests = [];
+  handleFilterChange = (value, type) => {
+    const { filterLocations } = this;
+    console.log(value);
+    console.log(type);
 
-    if (value.length === 0) {
+    if (type === 'from') {
+      this.selectedFilterFrom = value;
+    } else {
+      this.selectedFilterTo = value;
+    }
+
+    const filteredLocations = filterLocations(type);
+
+    this.setState({
+      filteredTrips: filteredLocations
+    });
+  }
+
+  filterLocations = (type) => {
+    const { tripFilter, fetchedPassengerRequests, fetchedRideRequests } = this.state;
+    const { selectedFilterFrom, selectedFilterTo } = this;
+
+    let tempRequests = [];
+    const selectedRequest = tripFilter === 'ride' ? fetchedRideRequests : fetchedPassengerRequests;
+    
+    if (selectedFilterFrom.length === 0 && selectedFilterTo.length === 0) {
       return tripFilter === 'passenger' ? fetchedPassengerRequests : fetchedRideRequests;
     }
-    
-    if (tripFilter === 'ride') {
-      fetchedRideRequests.forEach((location) => value.find((item) => {
-        if (tripWay === 'from' ? item === location.from : item === location.to) {
-          tempRequests.push(location);
+
+    selectedRequest.forEach(item => {
+      if (selectedFilterFrom.length !== 0 && selectedFilterTo.length !== 0) {
+        if ((selectedFilterFrom.includes(item.from) && selectedFilterTo.includes(item.to))) {
+          tempRequests.push(item);
         }
-        return null;
-      }));
-    } else {
-      fetchedPassengerRequests.forEach((location) => value.find((item) => {
-        if (tripWay === 'from' ? item === location.from : item === location.to) {
-          tempRequests.push(location);
+      } else {
+          if (selectedFilterFrom.includes(item.from) || (selectedFilterTo.includes(item.to))) {
+            tempRequests.push(item);
+          }
         }
-        return null;
-      }));
-    }
+    });
 
     return tempRequests;
   }
@@ -106,10 +104,10 @@ class App extends Component {
     const { tripFilter } = this.state;
     const { populateLocations } = this;
 
-    this.setState({
+    this.setState({                     // Resets the state to handle refetching of data
       fetchedPassengerRequests: [],
       fetchedRideRequests: [],
-      selectedFrom: [],
+      selectedFrom:   [],
       selectedTo: [],
       filteredTrips: [],
       tableLoading: true
@@ -136,8 +134,8 @@ class App extends Component {
   }
 
   render() {
-    const { filteredTrips, locations, selectedFrom, selectedTo, tableLoading, refreshIconHover } = this.state;
-    const { handleFromFilterChange, handleToFilterChange, onRadioChange, fetchData, handleRefreshHover, tripFilter } = this;
+    const { filteredTrips, locations, tableLoading, refreshIconHover } = this.state;
+    const { handleFilterChange, onRadioChange, fetchData, handleRefreshHover, tripFilter, selectedFilterFrom, selectedFilterTo } = this;
 
     return (
       <div className="App">
@@ -183,8 +181,8 @@ class App extends Component {
                 mode="multiple"
                 style={{ width: '100%' }}
                 placeholder="From"
-                onChange={handleFromFilterChange}
-                value={selectedFrom}
+                onChange={value => handleFilterChange(value, 'from')}
+                value={selectedFilterFrom}
                 allowClear={true}
                 maxTagCount={2}
                 defaultValue={'All'}
@@ -199,8 +197,8 @@ class App extends Component {
                 mode="multiple"
                 style={{ width: '100%' }}
                 placeholder="To"
-                onChange={handleToFilterChange}
-                value={selectedTo}
+                onChange={value => handleFilterChange(value, 'to')}
+                value={selectedFilterTo}
                 allowClear={true}
                 maxTagCount={2}
               >
@@ -226,9 +224,7 @@ class App extends Component {
   }
 
    componentDidMount() {
-    const { fetchData } = this;
-
-    fetchData();
+    this.fetchData();
   }
 }
 
