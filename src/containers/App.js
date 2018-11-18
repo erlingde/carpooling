@@ -12,6 +12,7 @@ class App extends Component {
 
     this.selectedFilterFrom = [];
     this.selectedFilterTo = [];
+    this.refreshTimer = 5;
     
     this.state = {
       tripFilter: 'ride',
@@ -20,7 +21,9 @@ class App extends Component {
       locations: [],
       filteredTrips: [],
       tableLoading: true,
-      refreshIconHover: false
+      refreshIconHover: false,
+      refreshIconClicked: false,
+      secondsUntilRefresh: 5
     };
   };
 
@@ -48,11 +51,23 @@ class App extends Component {
     });
   }
 
-  handleRefreshHover = (event) => {
-    const { refreshIconHover } = this.state;
+  handleRefreshHoverEnter = (event) => {
+    const { refreshIconClicked } = this.state;
+
+    console.log(event);
+
+    if (refreshIconClicked) {
+      return;
+    }
 
     this.setState({
-      refreshIconHover: !refreshIconHover
+      refreshIconHover: true
+    });
+  }
+
+  handleRefreshHoverLeave = (event) => {
+    this.setState({
+      refreshIconHover: false
     });
   }
 
@@ -72,6 +87,38 @@ class App extends Component {
     this.setState({
       filteredTrips: filteredLocations
     });
+  }
+
+  handleRefreshClick = () => {
+    const { refreshIconClicked } = this.state;
+    const { fetchData } = this;
+
+    if (refreshIconClicked) {
+      return;
+    }
+
+    this.setState({
+      refreshIconClicked: true
+    }, async () => {
+      const timer = await setInterval(() => {
+        this.setState({
+          secondsUntilRefresh: --this.refreshTimer
+        });
+        if (this.refreshTimer === 0) {
+          clearInterval(timer);
+        }
+      }, 1000);
+      
+      await setTimeout(() => {
+        this.refreshTimer = 5;
+        this.setState({
+          refreshIconClicked: false,
+          secondsUntilRefresh: 5
+        });
+      }, 5000);
+    });
+    
+    fetchData();
   }
 
   filterLocations = (type) => {
@@ -104,13 +151,10 @@ class App extends Component {
     const { tripFilter } = this.state;
     const { populateLocations } = this;
 
-    this.setState({                     // Resets the state to handle refetching of data
-      fetchedPassengerRequests: [],
-      fetchedRideRequests: [],
-      selectedFrom:   [],
-      selectedTo: [],
-      filteredTrips: [],
-      tableLoading: true
+    // Resets the state to handle refetching of data
+    this.setState({
+      tableLoading: true,
+      refreshIconHover: false
     }, async () => {
       await api.fetchRideRequests().then(res => {
         let driverRequests = res[0].data.results;
@@ -134,8 +178,8 @@ class App extends Component {
   }
 
   render() {
-    const { filteredTrips, locations, tableLoading, refreshIconHover } = this.state;
-    const { handleFilterChange, onRadioChange, fetchData, handleRefreshHover, tripFilter, selectedFilterFrom, selectedFilterTo } = this;
+    const { filteredTrips, locations, tableLoading, refreshIconHover, refreshIconClicked, secondsUntilRefresh } = this.state;
+    const { handleFilterChange, onRadioChange, handleRefreshHoverEnter, handleRefreshHoverLeave, tripFilter, selectedFilterFrom, selectedFilterTo, handleRefreshClick } = this;
 
     return (
       <div className="App">
@@ -163,14 +207,14 @@ class App extends Component {
                     </Radio.Button>
               </Tooltip>
               </Radio.Group>
-              <Tooltip title="Refresh">
+              <Tooltip title={refreshIconClicked ? `Refresh in ${secondsUntilRefresh}` : 'Refresh'}>
                 <Icon
                   type="sync"
                   spin={refreshIconHover}
-                  style={{ 'float': 'right','marginRight': '15px' , 'cursor': 'pointer'}}
-                  onClick={fetchData}
-                  onMouseEnter={handleRefreshHover}
-                  onMouseLeave={handleRefreshHover}
+                  style={refreshIconClicked ? {'float': 'right','marginRight': '15px', 'cursor': 'not-allowed'} : {'float': 'right','marginRight': '15px' , 'cursor': 'pointer'}}
+                  onClick={handleRefreshClick}
+                  onMouseEnter={handleRefreshHoverEnter}
+                  onMouseLeave={handleRefreshHoverLeave}
                 />
               </Tooltip>
             </Col>
