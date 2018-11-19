@@ -1,14 +1,15 @@
 {
-  "main.css": "/carpooling/static/css/main.d37a705f.chunk.css",
-  "main.js": "/carpooling/static/js/main.708112eb.chunk.js",
-  "main.js.map": "/carpooling/static/js/main.708112eb.chunk.js.map",
-  "static/js/1.a700ff87.chunk.js": "/carpooling/static/js/1.a700ff87.chunk.js",
-  "static/js/1.a700ff87.chunk.js.map": "/carpooling/static/js/1.a700ff87.chunk.js.map",
+  "main.css": "/carpooling/static/css/main.d4f46f3c.chunk.css",
+  "main.js": "/carpooling/static/js/main.2c34c9bb.chunk.js",
+  "main.js.map": "/carpooling/static/js/main.2c34c9bb.chunk.js.map",
+  "static/css/1.f3337f05.chunk.css": "/carpooling/static/css/1.f3337f05.chunk.css",
+  "static/js/1.7d7a90f7.chunk.js": "/carpooling/static/js/1.7d7a90f7.chunk.js",
+  "static/js/1.7d7a90f7.chunk.js.map": "/carpooling/static/js/1.7d7a90f7.chunk.js.map",
   "runtime~main.js": "/carpooling/static/js/runtime~main.e7ae11ed.js",
   "runtime~main.js.map": "/carpooling/static/js/runtime~main.e7ae11ed.js.map",
-  "static/media/logo.svg": "/carpooling/static/media/logo.5d5d9eef.svg",
-  "static/css/main.d37a705f.chunk.css.map": "/carpooling/static/css/main.d37a705f.chunk.css.map",
+  "static/css/1.f3337f05.chunk.css.map": "/carpooling/static/css/1.f3337f05.chunk.css.map",
+  "static/css/main.d4f46f3c.chunk.css.map": "/carpooling/static/css/main.d4f46f3c.chunk.css.map",
   "index.html": "/carpooling/index.html",
-  "precache-manifest.b2d817638e0b7a7c718f53009ceeee4e.js": "/carpooling/precache-manifest.b2d817638e0b7a7c718f53009ceeee4e.js",
+  "precache-manifest.9afb92224c9b63045cd16a107e6365b6.js": "/carpooling/precache-manifest.9afb92224c9b63045cd16a107e6365b6.js",
   "service-worker.js": "/carpooling/service-worker.js"
 }
