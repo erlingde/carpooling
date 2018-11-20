@@ -1,6 +1,6 @@
-Lists all available trips on www.samferda.net but filters out the rubbish ones.
-[apis.is](http://docs.apis.is/#endpoint-rides)
-[samferða](www.samferda.net)
+Lists all available trips on www.samferda.net but filters out the rubbish ones.<br>
+[apis.is](http://docs.apis.is/#endpoint-rides)<br>
+[samferða](http://samferda.net)
 
 ## Available Scripts
 
