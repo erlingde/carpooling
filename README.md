@@ -1,4 +1,4 @@
-Lists all available trips on www.samferda.net but filters out the rubbish ones.<br>
+Lists all carpooling requests on www.samferda.net but filters out the rubbish ones.<br>
 [apis.is](http://docs.apis.is/#endpoint-rides)<br>
 [samferða](http://samferda.net)
 
