@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon, Tooltip, Divider, Popover, Spin } from 'antd';
+import { Icon, Tooltip, Divider, Popover } from 'antd';
 
 const columns = [{
     title: 'From',
