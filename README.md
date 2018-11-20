@@ -1,4 +1,6 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Lists all available trips on www.samferda.net but filters out the rubbish ones.
+[apis.is](http://docs.apis.is/#endpoint-rides)
+[samferða](www.samferda.net)
 
 ## Available Scripts
 
