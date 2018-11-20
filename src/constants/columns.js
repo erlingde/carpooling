@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon, Tooltip } from 'antd';
+import { Icon, Tooltip, Divider, Popover, Spin } from 'antd';
 
 const columns = [{
     title: 'From',
@@ -24,18 +24,16 @@ const columns = [{
     key: 'time',
     dataIndex: 'time'
   }, {
-    title: () => (
-      <span>
-        <Tooltip title="Information">
-          <Icon type="info-circle"/>
-        </Tooltip>
-      </span>
-    ),
+    title: 'Details',
     key: 'link',
     dataIndex: 'link',
     render: (text, record) => (
       <span>
-        <a href={record.link} rel="noopener noreferrer" target="_blank">Details</a>
+        <a href={record.link} rel="noopener noreferrer" target="_blank">Samferða</a>
+        <Divider type="vertical" />
+        <Popover content={record.details ? record.details : <Icon type="loading" style={{ fontSize: 16 }} spin />}>
+          <Icon type="info-circle"/>
+        </Popover>
       </span>
     )
   }];

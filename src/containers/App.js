@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { Row, Col, Radio, Select, Table, Icon, Tooltip } from 'antd';
 
 import api from '../services/api';
+import scraper from '../services/scraper';
+
+
 import columns from '../constants/columns'
 
 import './App.css';
@@ -53,8 +56,6 @@ class App extends Component {
 
   handleRefreshHoverEnter = (event) => {
     const { refreshIconClicked } = this.state;
-
-    console.log(event);
 
     if (refreshIconClicked) {
       return;
@@ -116,6 +117,7 @@ class App extends Component {
           secondsUntilRefresh: 5
         });
       }, 5000);
+      
     });
     
     fetchData();
@@ -152,6 +154,9 @@ class App extends Component {
     const { populateLocations } = this;
 
     // Resets the state to handle refetching of data
+    this.selectedFilterFrom = [];
+    this.selectedFilterTo = [];
+
     this.setState({
       tableLoading: true,
       refreshIconHover: false
@@ -207,7 +212,7 @@ class App extends Component {
                     </Radio.Button>
               </Tooltip>
               </Radio.Group>
-              <Tooltip title={refreshIconClicked ? `Refresh in ${secondsUntilRefresh}` : 'Refresh'}>
+              <Tooltip title={refreshIconClicked ? `Available to refresh in ${secondsUntilRefresh}s` : 'Refresh'}>
                 <Icon
                   type="sync"
                   spin={refreshIconHover}
@@ -259,6 +264,18 @@ class App extends Component {
                 dataSource={filteredTrips}
                 loading={tableLoading}
                 style={{'backgroundColor': '#e9ebee'}}
+                onRow={record => {
+                  return {
+                    onMouseEnter: async () => {
+                      if (!record.details) {
+                        await api.fetchURL(record.link).then(res => {
+                          record.details = scraper.scrapeHtml(res.data);
+                          this.forceUpdate();
+                       });
+                      }
+                    }
+                  }
+                }}
               />
             </Col>
           </Row>
@@ -267,7 +284,7 @@ class App extends Component {
     );
   }
 
-   componentDidMount() {
+  componentDidMount() {
     this.fetchData();
   }
 }
