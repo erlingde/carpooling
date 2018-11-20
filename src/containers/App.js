@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
+import moment from 'moment';
 import { Row, Col, Radio, Select, Table, Icon, Tooltip } from 'antd';
+import _ from 'lodash';
 
 import api from '../services/api';
 import scraper from '../services/scraper';
-
 
 import columns from '../constants/columns'
 
@@ -74,8 +75,6 @@ class App extends Component {
 
   handleFilterChange = (value, type) => {
     const { filterLocations } = this;
-    console.log(value);
-    console.log(type);
 
     if (type === 'from') {
       this.selectedFilterFrom = value;
@@ -151,9 +150,8 @@ class App extends Component {
 
   fetchData = () => {
     const { tripFilter } = this.state;
-    const { populateLocations } = this;
+    const { populateLocations, filterRequestDates } = this;
 
-    // Resets the state to handle refetching of data
     this.selectedFilterFrom = [];
     this.selectedFilterTo = [];
 
@@ -165,7 +163,10 @@ class App extends Component {
         let driverRequests = res[0].data.results;
         let passengerRequests = res[1].data.results;
   
-        [...passengerRequests, ...driverRequests].forEach((item) => {
+        passengerRequests = filterRequestDates(passengerRequests);
+        driverRequests = filterRequestDates(driverRequests);
+
+        [...driverRequests, ...passengerRequests].forEach((item) => {
           item.key = item.link
         });
   
@@ -180,6 +181,10 @@ class App extends Component {
         });
       });
     });
+  }
+
+  filterRequestDates = (data) => {
+    return _.remove(data, (item) => !moment(item.date, 'YYYYY-MM-DD').isValid() || moment(item.date, 'YYYYY-MM-DD').year() < moment(Date.now()).year() + 4);
   }
 
   render() {

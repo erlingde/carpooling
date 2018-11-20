@@ -29,11 +29,11 @@ const columns = [{
     dataIndex: 'link',
     render: (text, record) => (
       <span>
-        <a href={record.link} rel="noopener noreferrer" target="_blank">Samferða</a>
-        <Divider type="vertical" />
         <Popover content={record.details ? record.details : <Icon type="loading" style={{ fontSize: 16 }} spin />}>
-          <Icon type="info-circle"/>
+          <Icon type="info-circle" style={{ fontSize: '18px', color: 'red' }} />
         </Popover>
+        <Divider type="vertical" />
+        <a href={record.link} rel="noopener noreferrer" target="_blank">Samferða</a>
       </span>
     )
   }];
