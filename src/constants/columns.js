@@ -32,7 +32,7 @@ const columns = [{
         <Popover content={record.details ? record.details : <Icon type="loading" style={{ fontSize: 16 }} spin />}>
           <Icon type="info-circle" style={{ fontSize: '18px', color: 'red' }} />
         </Popover>
-        <Divider type="vertical" />
+        <Divider type="vertical" style={{backgroundColor: 'grey'}}/>
         <a href={record.link} rel="noopener noreferrer" target="_blank">Samferða</a>
       </span>
     )
