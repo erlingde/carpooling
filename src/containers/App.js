@@ -204,37 +204,39 @@ class App extends Component {
     return (
       <div className="App">
         <Layout style={{backgroundColor: 'grey', minHeight: '100vh', fontSize: 'calc(10px + 2vmin)'}}>
-          <Header style={{backgroundColor: 'grey', marginBottom: '1em'}}>
-            <Row type="flex" justify="center">
+          <Header style={{backgroundColor: 'grey', lineHeight: window.innerWidth < 500 ? '40px' : '64px'}}>
+            <Row type="flex" justify="center"  style={{margin: '10px 0'}}>
               <Col xs={24} md={20} lg={18} xl={14}>
-                <h1>
+                <h1  style={{margin: '10px 0'}}>
                   Carpooling in Iceland
                 </h1>
               </Col>
             </Row>
           </Header>
           <Content>
-            <Row type="flex" justify="center">
-              <Col xs={24} md={20} lg={18} xl={14}>
-                <Radio.Group size="large" onChange={onRadioChange} defaultValue="ride" buttonStyle="solid" style={{'verticalAlign': 'top'}}>
-                <Tooltip title="Passengers seeking rides">
-                    <Radio.Button value="ride" checked={tripFilter === 'ride' ? true : false} style={{ boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19)'}}>
-                      Ride
-                      <Icon type="car" style={{'marginLeft': '6px'}}/>
-                    </Radio.Button>
-                </Tooltip>
-                <Tooltip title="Drivers seeking passengers">
-                    <Radio.Button value="passenger"checked={tripFilter === 'passenger' ? true : false}>
-                        Passengers
-                        <Icon type="user-add" style={{'marginLeft': '6px'}}/>
+            <Row type="flex" style={{marginTop: '40px'}} align='middle'>
+              <Col xs={{ span: 8, offset: 8 }}>
+                <Radio.Group size={window.innerWidth < 600 ? 'small' : 'large'} onChange={onRadioChange} defaultValue="ride" buttonStyle="solid" style={{'verticalAlign': 'top'}}>
+                  <Tooltip title="Passengers seeking rides">
+                      <Radio.Button value="ride" checked={tripFilter === 'ride' ? true : false}>
+                        Ride
+                        <Icon type="car" style={{'marginLeft': '6px'}}/>
                       </Radio.Button>
-                </Tooltip>
+                  </Tooltip>
+                  <Tooltip title="Drivers seeking passengers">
+                      <Radio.Button value="passenger"checked={tripFilter === 'passenger' ? true : false}>
+                          Passengers
+                          <Icon type="user-add" style={{'marginLeft': '6px'}}/>
+                        </Radio.Button>
+                  </Tooltip>
                 </Radio.Group>
+              </Col>
+              <Col xs={{span: 1, offset: 7}} md={{span: 1, offset: 5}} lg={{span: 1, offset: 4}} xl={{span: 1, offset: 2}}>
                 <Tooltip title={refreshIconClicked ? `Available to refresh in ${secondsUntilRefresh}s` : 'Refresh'}>
                   <Icon
                     type="sync"
                     spin={refreshIconHover}
-                    style={refreshIconClicked ? {float: 'right', marginRight: '15px',  cursor: 'not-allowed'} : { float: 'right', marginRight: '15px' , cursor: 'pointer'}}
+                    style={refreshIconClicked ? {float: 'right', marginRight: '6px', cursor: 'not-allowed'} : { float: 'right', marginRight: '6px' , cursor: 'pointer'}}
                     onClick={handleRefreshClick}
                     onMouseEnter={handleRefreshHoverEnter}
                     onMouseLeave={handleRefreshHoverLeave}
@@ -299,21 +301,21 @@ class App extends Component {
               </Col>
             </Row>
           </Content>
-          <Footer style={{ bottom: '0', width: '100vw', fontSize: '12px' }}>
+          <Footer style={{ bottom: '0', width: '100vw', fontSize: '12px', borderTop: 'solid 1px black' }}>
             <Row type="flex" justify="center" gutter={16} align="middle">
               <Col className="gutter-row" span={6}>
                 <a className='footer_link' href='http://www.samferda.net/' rel="noopener noreferrer" target="_blank">
-                  <i className="fas fa-taxi" style={{fontSize: '2em'}} />
+                  <i className="fas fa-taxi" style={{ fontSize: '2em' }} />
                 </a>
               </Col>
               <Col className="gutter-row" span={6}>
                 <a className='footer_link' href='https://github.com/erlingde/carpooling' rel="noopener noreferrer" target="_blank">
-                  <i className="fab fa-github" style={{fontSize: '2em'}} />
+                  <i className="fab fa-github" style={{ fontSize: '2em' }} />
                 </a>
               </Col>
               <Col className="gutter-row" span={6}>
                 <a className='footer_link' href='https://www.apis.is' rel="noopener noreferrer" target="_blank">
-                  <img src={apisLogo} alt="apis.is" style={{height:'1.6em', width:'1.6em', verticalAlign: 'sub'}}></img>
+                  <img src={apisLogo} alt="apis.is" style={{ height:'1.6em', width:'1.6em', verticalAlign: 'sub' }}></img>
                 </a>
               </Col>
             </Row>
