@@ -301,19 +301,19 @@ class App extends Component {
               </Col>
             </Row>
           </Content>
-          <Footer style={{ bottom: '0', width: '100vw', fontSize: '12px', borderTop: 'solid 1px black' }}>
+          <Footer style={{ bottom: '0', fontSize: '12px', borderTop: 'solid 1px black' }}>
             <Row type="flex" justify="center" gutter={16} align="middle">
-              <Col className="gutter-row" span={6}>
+              <Col className="gutter-row" xs={8} md={3}>
                 <a className='footer_link' href='http://www.samferda.net/' rel="noopener noreferrer" target="_blank">
                   <i className="fas fa-taxi" style={{ fontSize: '2em' }} />
                 </a>
               </Col>
-              <Col className="gutter-row" span={6}>
+              <Col className="gutter-row" xs={8} md={3}>
                 <a className='footer_link' href='https://github.com/erlingde/carpooling' rel="noopener noreferrer" target="_blank">
                   <i className="fab fa-github" style={{ fontSize: '2em' }} />
                 </a>
               </Col>
-              <Col className="gutter-row" span={6}>
+              <Col className="gutter-row" xs={8} md={3}>
                 <a className='footer_link' href='https://www.apis.is' rel="noopener noreferrer" target="_blank">
                   <img src={apisLogo} alt="apis.is" style={{ height:'1.6em', width:'1.6em', verticalAlign: 'sub' }}></img>
                 </a>
