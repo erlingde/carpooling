@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/carpooling/precache-manifest.31afb0d4b72f09bca013b9baef8ab531.js"
+  "/carpooling/precache-manifest.baa33f77876be4f0d937574dc8d139cf.js"
 );
 
 workbox.clientsClaim();
