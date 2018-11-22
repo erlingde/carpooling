@@ -7,7 +7,6 @@
   min-height: 100vh;
   /*background: linear-gradient(to top right, rgb(27, 91, 134) 0% ,rgb(26, 88, 129) 100%);
  */
- background-color: grey;
 }
 
 .footer_link {
@@ -17,4 +16,9 @@
 
 .footer_link:hover {
   filter: opacity(100%);
+}
+
+.ant-table-thead tr th{
+  border-bottom: 1px solid black;
+  background-color: #e9ebee;
 }
