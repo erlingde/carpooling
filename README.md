@@ -1,8 +1,7 @@
 ## Carpooling
 Project can be viewed [here](https://erlingde.github.io/carpooling).<br>
 Lists all carpooling requests on www.samferda.net but filters out the ones with invalid dates.<br>
-[apis.is](http://docs.apis.is/#endpoint-rides)<br>
-[samferða](http://samferda.net)
+Uses an API provided by [www.apis.is](http://docs.apis.is/#endpoint-rides)<br>
 
 ## Available Scripts
 
