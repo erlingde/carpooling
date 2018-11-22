@@ -288,6 +288,7 @@ class App extends Component {
                     loading={tableLoading}
                     style={{ 'backgroundColor': '#e9ebee' }}
                     size={window.innerWidth < 600 ? 'small' : 'middle'}
+                    showHeader={true}
                     onRow={record => {
                       return {
                         onMouseEnter: async () => {
