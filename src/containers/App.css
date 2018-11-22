@@ -12,8 +12,9 @@
 
 .footer_link {
   color: grey;
+  filter: opacity(50%);
 }
 
 .footer_link:hover {
-  color: #1890ff;
+  filter: opacity(100%);
 }
