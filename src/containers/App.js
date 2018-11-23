@@ -290,7 +290,7 @@ class App extends Component {
               onRow={record => {
                 return {
                   onMouseEnter: async () => {
-                    if (moment(record.date).isAfter(Date.now)) { // Prevents the user from hovering over expired data
+                    if (moment(record.date, 'YYYY-MM-DD').isAfter(Date.now)) { // Prevents the user from hovering over expired data
                       fetchData();
                     } else if (!record.details) {
                       await api.fetchURL(record.link).then(res => {
