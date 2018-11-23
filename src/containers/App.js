@@ -217,7 +217,7 @@ class App extends Component {
 
     return (
     <Content>
-      <div style={{display: 'inline-block', border: '1px solid black', borderRadius: '10px', background: '#e9ebee', padding: '25px', boxShadow: '5px 10px'}}>
+      <div style={{ display: 'inline-block', border: '1px solid black', borderRadius: '10px', background: '#e9ebee', padding: '25px', boxShadow: '5px 10px', width: '600px' }}>
         <Row type="flex" align='middle'>
           <Col xs={{ span: 23, offset: 1 }}>
             <Radio.Group size={window.innerWidth < 600 ? 'small' : 'large'} onChange={onRadioChange} defaultValue="ride" buttonStyle="solid" style={{'verticalAlign': 'top'}}>
@@ -290,7 +290,7 @@ class App extends Component {
               onRow={record => {
                 return {
                   onMouseEnter: async () => {
-                    if (moment(record.date).isAfter()) { // Prevents the user from hovering over expired data
+                    if (moment(record.date).isAfter(Date.now)) { // Prevents the user from hovering over expired data
                       fetchData();
                     } else if (!record.details) {
                       await api.fetchURL(record.link).then(res => {
