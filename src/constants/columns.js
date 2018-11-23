@@ -4,15 +4,15 @@ import { Icon, Tooltip, Divider, Popover } from 'antd';
 const columns = [{
     title: 'From',
     dataIndex: 'from',
-    key: 'from',
+    key: 'from'
   }, {
     title: 'To',
     dataIndex: 'to',
-    key: 'to',
+    key: 'to'
   }, {
     title: 'Date',
     key: 'date',
-    dataIndex: 'date',
+    dataIndex: 'date'
   }, {
     title: () => (
       <span>

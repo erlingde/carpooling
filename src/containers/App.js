@@ -199,7 +199,7 @@ class App extends Component {
 
   render() {
     const { filteredTrips, locations, tableLoading, refreshIconHover, refreshIconClicked, secondsUntilRefresh } = this.state;
-    const { handleFilterChange, onRadioChange, handleRefreshHoverEnter, handleRefreshHoverLeave, tripFilter, selectedFilterFrom, selectedFilterTo, handleRefreshClick } = this;
+    const { handleFilterChange, onRadioChange, handleRefreshHoverEnter, handleRefreshHoverLeave, tripFilter, selectedFilterFrom, selectedFilterTo, handleRefreshClick, fetchData } = this;
 
     return (
       <div className="App">
@@ -288,11 +288,12 @@ class App extends Component {
                     loading={tableLoading}
                     style={{ 'backgroundColor': '#e9ebee' }}
                     size={window.innerWidth < 600 ? 'small' : 'middle'}
-                    showHeader={true}
                     onRow={record => {
                       return {
                         onMouseEnter: async () => {
-                          if (!record.details) {
+                          if (moment(record.date).isAfter()) { // Prevents the user hovering over expired data
+                            fetchData();
+                          } else if (!record.details) {
                             await api.fetchURL(record.link).then(res => {
                               record.details = scraper.scrapeHtml(res.data);
                               this.forceUpdate();
