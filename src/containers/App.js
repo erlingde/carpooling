@@ -197,134 +197,149 @@ class App extends Component {
     });
   }
 
-  render() {
+  renderHeader = () => {
+    return (
+      <Header style={{ height: '100%', background: 'linear-gradient(to right, #243B55, #141E30)', lineHeight: window.innerWidth < 500 ? '40px' : '64px'}}>
+        <Row type="flex" justify="center"  style={{ margin: '10px 0' }}>
+          <Col xs={24} md={20} lg={18} xl={14}>
+            <h1 style={{ margin: '10px 0', color:'white' }}>
+              Carpooling in Iceland
+            </h1>
+          </Col>
+        </Row>
+      </Header>
+    );
+  }
+
+  renderContent = () => {
     const { filteredTrips, locations, tableLoading, refreshIconHover, refreshIconClicked, secondsUntilRefresh } = this.state;
-    const { handleFilterChange, onRadioChange, handleRefreshHoverEnter, handleRefreshHoverLeave, tripFilter, selectedFilterFrom, selectedFilterTo, handleRefreshClick } = this;
+    const { handleFilterChange, onRadioChange, handleRefreshHoverEnter, handleRefreshHoverLeave, tripFilter, selectedFilterFrom, selectedFilterTo, handleRefreshClick, fetchData } = this;
 
     return (
+    <Content>
+      <div style={{display: 'inline-block', border: '1px solid black', borderRadius: '10px', background: '#e9ebee', padding: '25px', boxShadow: '5px 10px'}}>
+        <Row type="flex" align='middle'>
+          <Col xs={{ span: 23, offset: 1 }}>
+            <Radio.Group size={window.innerWidth < 600 ? 'small' : 'large'} onChange={onRadioChange} defaultValue="ride" buttonStyle="solid" style={{'verticalAlign': 'top'}}>
+              <Tooltip title="Passengers seeking rides">
+                  <Radio.Button value="ride" checked={tripFilter === 'ride' ? true : false}>
+                    Ride
+                    <Icon type="car" style={{'marginLeft': '6px'}}/>
+                  </Radio.Button>
+              </Tooltip>
+              <Tooltip title="Drivers seeking passengers">
+                  <Radio.Button value="passenger"checked={tripFilter === 'passenger' ? true : false}>
+                      Passengers
+                      <Icon type="user-add" style={{'marginLeft': '6px'}}/>
+                    </Radio.Button>
+              </Tooltip>
+            </Radio.Group>
+            <Tooltip title={refreshIconClicked ? `Available to refresh in ${secondsUntilRefresh}s` : 'Refresh'}>
+              <Icon
+                type="sync"
+                spin={refreshIconHover}
+                style={refreshIconClicked ? {float: 'right', marginRight: '6px', cursor: 'not-allowed'} : { float: 'right', marginRight: '6px' , cursor: 'pointer'}}
+                onClick={handleRefreshClick}
+                onMouseEnter={handleRefreshHoverEnter}
+                onMouseLeave={handleRefreshHoverLeave}
+              />
+            </Tooltip>
+          </Col>
+        </Row>
+        <Row type="flex" justify="center">
+          <Col xs={12}>
+            <Select
+              mode="multiple"
+              style={{ width: '100%' }}
+              placeholder="From"
+              onChange={value => handleFilterChange(value, 'from')}
+              value={selectedFilterFrom}
+              allowClear={true}
+              maxTagCount={2}
+              defaultValue={'All'}
+            >
+              {locations.map((item) =>
+                <Select.Option key={item}>{item}</Select.Option>
+              )}
+            </Select>
+          </Col>
+          <Col xs={12}>
+            <Select
+              mode="multiple"
+              style={{ width: '100%' }}
+              placeholder="To"
+              onChange={value => handleFilterChange(value, 'to')}
+              value={selectedFilterTo}
+              allowClear={true}
+              maxTagCount={2}
+            >
+            {locations.map((item) =>
+              <Select.Option key={item}>{item}</Select.Option>
+            )}
+          </Select>
+        </Col>
+        </Row>
+        <Row type="flex" justify="center">
+          <Col xs={24}>
+            <Table
+              columns={columns}
+              dataSource={filteredTrips}
+              loading={tableLoading}
+              style={{ 'backgroundColor': '#e9ebee' }}
+              size={window.innerWidth < 600 ? 'small' : 'middle'}
+              onRow={record => {
+                return {
+                  onMouseEnter: async () => {
+                    if (moment(record.date).isAfter()) { // Prevents the user from hovering over expired data
+                      fetchData();
+                    } else if (!record.details) {
+                      await api.fetchURL(record.link).then(res => {
+                        record.details = scraper.scrapeHtml(res.data);
+                        this.forceUpdate();
+                      });
+                    }
+                  }
+                }
+              }}
+            />
+          </Col>
+        </Row>
+      </div>
+    </Content>
+    );
+  }
+
+  renderFooter = () => {
+    return (
+      <Footer style={{position:'sticky', bottom: '0', fontSize: '12px', borderTop: 'solid 1px black', backgroundColor: '#141E30' }}>
+        <Row type="flex" justify="center" gutter={16} align="middle">
+          <Col className="gutter-row" xs={8} md={3}>
+            <a className='footer_link' href='http://www.samferda.net/' rel="noopener noreferrer" target="_blank">
+              <i className="fas fa-taxi" style={{ fontSize: '2em' }} />
+            </a>
+          </Col>
+          <Col className="gutter-row" xs={8} md={3}>
+            <a className='footer_link' href='https://www.apis.is' rel="noopener noreferrer" target="_blank">
+              <img src={apisLogo} alt="apis.is" style={{ height:'2em', width:'2em', verticalAlign: 'sub' }}></img>
+            </a>
+          </Col>
+          <Col className="gutter-row" xs={8} md={3}>
+            <a className='footer_link' href='https://github.com/erlingde/carpooling' rel="noopener noreferrer" target="_blank">
+              <i className="fab fa-github" style={{ fontSize: '2em' }} />
+            </a>
+          </Col>
+        </Row>
+      </Footer>
+    );
+  }
+
+  render() {
+    return (
       <div className="App">
-        <Layout style={{
-            background: 'linear-gradient(to right, #243B55, #141E30)',
-            minHeight: '100vh',
-            fontSize: 'calc(10px + 2vmin)'
-          }}>
-          <Header style={{ height: '100%', background: 'linear-gradient(to right, #243B55, #141E30)', lineHeight: window.innerWidth < 500 ? '40px' : '64px'}}>
-            <Row type="flex" justify="center"  style={{ margin: '10px 0' }}>
-              <Col xs={24} md={20} lg={18} xl={14}>
-                <h1 style={{ margin: '10px 0', color:'white' }}>
-                  Carpooling in Iceland
-                </h1>
-              </Col>
-            </Row>
-          </Header>
-          <Content>
-            <div style={{display: 'inline-block', border: '1px solid black', borderRadius: '10px', background: '#e9ebee', padding: '25px', boxShadow: '5px 10px'}}>
-              <Row type="flex" align='middle'>
-                <Col xs={{ span: 23, offset: 1 }}>
-                  <Radio.Group size={window.innerWidth < 600 ? 'small' : 'large'} onChange={onRadioChange} defaultValue="ride" buttonStyle="solid" style={{'verticalAlign': 'top'}}>
-                    <Tooltip title="Passengers seeking rides">
-                        <Radio.Button value="ride" checked={tripFilter === 'ride' ? true : false}>
-                          Ride
-                          <Icon type="car" style={{'marginLeft': '6px'}}/>
-                        </Radio.Button>
-                    </Tooltip>
-                    <Tooltip title="Drivers seeking passengers">
-                        <Radio.Button value="passenger"checked={tripFilter === 'passenger' ? true : false}>
-                            Passengers
-                            <Icon type="user-add" style={{'marginLeft': '6px'}}/>
-                          </Radio.Button>
-                    </Tooltip>
-                  </Radio.Group>
-                  <Tooltip title={refreshIconClicked ? `Available to refresh in ${secondsUntilRefresh}s` : 'Refresh'}>
-                    <Icon
-                      type="sync"
-                      spin={refreshIconHover}
-                      style={refreshIconClicked ? {float: 'right', marginRight: '6px', cursor: 'not-allowed'} : { float: 'right', marginRight: '6px' , cursor: 'pointer'}}
-                      onClick={handleRefreshClick}
-                      onMouseEnter={handleRefreshHoverEnter}
-                      onMouseLeave={handleRefreshHoverLeave}
-                    />
-                  </Tooltip>
-                </Col>
-              </Row>
-              <Row type="flex" justify="center">
-                <Col xs={12}>
-                  <Select
-                    mode="multiple"
-                    style={{ width: '100%' }}
-                    placeholder="From"
-                    onChange={value => handleFilterChange(value, 'from')}
-                    value={selectedFilterFrom}
-                    allowClear={true}
-                    maxTagCount={2}
-                    defaultValue={'All'}
-                  >
-                    {locations.map((item) =>
-                      <Select.Option key={item}>{item}</Select.Option>
-                    )}
-                  </Select>
-                </Col>
-                <Col xs={12}>
-                  <Select
-                    mode="multiple"
-                    style={{ width: '100%' }}
-                    placeholder="To"
-                    onChange={value => handleFilterChange(value, 'to')}
-                    value={selectedFilterTo}
-                    allowClear={true}
-                    maxTagCount={2}
-                  >
-                  {locations.map((item) =>
-                    <Select.Option key={item}>{item}</Select.Option>
-                  )}
-                </Select>
-              </Col>
-              </Row>
-              <Row type="flex" justify="center">
-                <Col xs={24}>
-                  <Table
-                    columns={columns}
-                    dataSource={filteredTrips}
-                    loading={tableLoading}
-                    style={{ 'backgroundColor': '#e9ebee' }}
-                    size={window.innerWidth < 600 ? 'small' : 'middle'}
-                    showHeader={true}
-                    onRow={record => {
-                      return {
-                        onMouseEnter: async () => {
-                          if (!record.details) {
-                            await api.fetchURL(record.link).then(res => {
-                              record.details = scraper.scrapeHtml(res.data);
-                              this.forceUpdate();
-                            });
-                          }
-                        }
-                      }
-                    }}
-                  />
-                </Col>
-              </Row>
-            </div>
-          </Content>
-          <Footer style={{position:'sticky', bottom: '0', fontSize: '12px', borderTop: 'solid 1px black', backgroundColor: '#141E30' }}>
-            <Row type="flex" justify="center" gutter={16} align="middle">
-              <Col className="gutter-row" xs={8} md={3}>
-                <a className='footer_link' href='http://www.samferda.net/' rel="noopener noreferrer" target="_blank">
-                  <i className="fas fa-taxi" style={{ fontSize: '2em' }} />
-                </a>
-              </Col>
-              <Col className="gutter-row" xs={8} md={3}>
-                <a className='footer_link' href='https://www.apis.is' rel="noopener noreferrer" target="_blank">
-                  <img src={apisLogo} alt="apis.is" style={{ height:'2em', width:'2em', verticalAlign: 'sub' }}></img>
-                </a>
-              </Col>
-              <Col className="gutter-row" xs={8} md={3}>
-                <a className='footer_link' href='https://github.com/erlingde/carpooling' rel="noopener noreferrer" target="_blank">
-                  <i className="fab fa-github" style={{ fontSize: '2em' }} />
-                </a>
-              </Col>
-            </Row>
-          </Footer>
+        <Layout style={{ background: 'linear-gradient(to right, #243B55, #141E30)', minHeight: '100vh', fontSize: 'calc(10px + 2vmin)' }}>
+          {this.renderHeader()}
+          {this.renderContent()}
+          {this.renderFooter()}
         </Layout>
       </div>
     );
@@ -337,7 +352,7 @@ class App extends Component {
 
   componentWillUnmount() {
     window.removeEventListener("resize", this.updateWidth);
-}
+  }
 }
 
 export default App;

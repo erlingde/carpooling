@@ -11,7 +11,7 @@ const scrapeHtml = (data) => {
     const nonSmokeCar = !$('tr:nth-child(11)').children()[1].children[0] ? undefined : $('tr:nth-child(11)').children()[1].children[0].data;
     const notes = !$('tr:nth-child(12)').children()[1].children[0] ? undefined : $('tr:nth-child(12)').children()[1].children[0].data;
 
-    const result = (
+    return (
         <div>
             {seats && <p><b>Seats: </b>{seats}</p>}
             {name && <p><b>Name: </b> {name}</p>}
@@ -21,8 +21,6 @@ const scrapeHtml = (data) => {
             {notes && <p><b>Notes: </b>{notes}</p> }    
         </div>
     );
-
-    return result;
 }
 
 export default { scrapeHtml };
