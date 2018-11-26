@@ -20,12 +20,12 @@ class App extends Component {
     this.selectedFilterFrom = [];
     this.selectedFilterTo = [];
     this.refreshTimer = 5;
-    
+    this.locations = [];
+    this.fetchedPassengerRequests = [];
+    this.fetchedRideRequests = [];
+
     this.state = {
       tripFilter: 'ride',
-      fetchedPassengerRequests: [],
-      fetchedRideRequests: [],
-      locations: [],
       filteredTrips: [],
       tableLoading: true,
       refreshIconHover: false,
@@ -48,7 +48,7 @@ class App extends Component {
   }
 
   onRadioChange = (event) => {
-    const { fetchedRideRequests, fetchedPassengerRequests } = this.state;
+    const { fetchedRideRequests, fetchedPassengerRequests } = this;
 
     this.selectedFilterFrom = [];
     this.selectedFilterTo = [];
@@ -127,8 +127,8 @@ class App extends Component {
   }
 
   filterLocations = (type) => {
-    const { tripFilter, fetchedPassengerRequests, fetchedRideRequests } = this.state;
-    const { selectedFilterFrom, selectedFilterTo } = this;
+    const { tripFilter } = this.state;
+    const { selectedFilterFrom, selectedFilterTo, fetchedPassengerRequests, fetchedRideRequests } = this;
 
     let tempRequests = [];
     const selectedRequest = tripFilter === 'ride' ? fetchedRideRequests : fetchedPassengerRequests;
@@ -164,23 +164,20 @@ class App extends Component {
       refreshIconHover: false
     }, async () => {
       await api.fetchRideRequests().then(res => {
-        let driverRequests = res[0].data.results;
-        let passengerRequests = res[1].data.results;
+        const driverRequests = res[0].data.results;
+        const passengerRequests = res[1].data.results;
   
-        passengerRequests = filterRequestDates(passengerRequests);
-        driverRequests = filterRequestDates(driverRequests);
+        this.fetchedPassengerRequests = filterRequestDates(passengerRequests);
+        this.fetchedRideRequests = filterRequestDates(driverRequests);
 
-        [...driverRequests, ...passengerRequests].forEach((item) => {
+        [...this.fetchedPassengerRequests, ...this.fetchedRideRequests].forEach((item) => {
           item.key = item.link
         });
   
-        const totalLocations = populateLocations([...driverRequests, ...passengerRequests], []);
+        this.locations = populateLocations([...this.fetchedRideRequests, ...this.fetchedPassengerRequests], []).sort();
 
         this.setState({
-          fetchedPassengerRequests: passengerRequests,
-          fetchedRideRequests: driverRequests,
-          filteredTrips: tripFilter === 'passenger' ? passengerRequests : driverRequests,
-          locations: totalLocations.sort(),
+          filteredTrips: tripFilter === 'passenger' ? this.fetchedPassengerRequests : this.fetchedRideRequests,
           tableLoading: false
         });
       });
@@ -212,8 +209,8 @@ class App extends Component {
   }
 
   renderContent = () => {
-    const { filteredTrips, locations, tableLoading, refreshIconHover, refreshIconClicked, secondsUntilRefresh } = this.state;
-    const { handleFilterChange, onRadioChange, handleRefreshHoverEnter, handleRefreshHoverLeave, tripFilter, selectedFilterFrom, selectedFilterTo, handleRefreshClick, fetchData } = this;
+    const { filteredTrips, tableLoading, refreshIconHover, refreshIconClicked, secondsUntilRefresh } = this.state;
+    const { handleFilterChange, onRadioChange, handleRefreshHoverEnter, handleRefreshHoverLeave, tripFilter, selectedFilterFrom, selectedFilterTo, handleRefreshClick, fetchData, locations } = this;
 
     return (
     <Content>
@@ -256,7 +253,6 @@ class App extends Component {
               value={selectedFilterFrom}
               allowClear={true}
               maxTagCount={2}
-              defaultValue={'All'}
             >
               {locations.map((item) =>
                 <Select.Option key={item}>{item}</Select.Option>
@@ -291,10 +287,8 @@ class App extends Component {
                 return {
                   onMouseEnter: async () => {
                     if (!record.details) {
-                      const link = record.link === 'http://www.samferda.net/en/detail/101033' ? 'http://www.samferda.net/en/detail/101455' : record.link;
-                      await api.fetchURL(link).then(res => {
+                      await api.fetchURL(record.link).then(res => {
                         record.details = scraper.scrapeHtml(res.data);
-
                         if (record.details === undefined) {
                           fetchData();
                         } else {
