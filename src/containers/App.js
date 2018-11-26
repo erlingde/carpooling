@@ -291,10 +291,8 @@ class App extends Component {
                 return {
                   onMouseEnter: async () => {
                     if (!record.details) {
-                      const link = record.link === 'http://www.samferda.net/en/detail/101033' ? 'http://www.samferda.net/en/detail/101455' : record.link;
-                      await api.fetchURL(link).then(res => {
+                      await api.fetchURL(record.link).then(res => {
                         record.details = scraper.scrapeHtml(res.data);
-
                         if (record.details === undefined) {
                           fetchData();
                         } else {

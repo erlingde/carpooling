@@ -15,6 +15,7 @@ const fetchRideRequests = () => {
 const fetchURL = (url) => {
     try {
         const promise = axios(`https://cors.io/?${url}`);
+        //const promise = axios(`https://cors.io/?http://www.samferda.net/en/detail/101352`);
         
         return Promise.resolve(promise);
     } catch (e) {
