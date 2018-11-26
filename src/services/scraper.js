@@ -6,7 +6,6 @@ const scrapeHtml = (data) => {
 
     // Checks if the data is expired
     if ($('tr:nth-child(6)').children()[1] === undefined) {
-        console.log('returning undefined from scraper');
         return undefined;
     }
 

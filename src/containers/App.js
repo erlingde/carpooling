@@ -158,7 +158,7 @@ class App extends Component {
 
     this.selectedFilterFrom = [];
     this.selectedFilterTo = [];
-    console.log('refreshing');
+
     this.setState({
       tableLoading: true,
       refreshIconHover: false
