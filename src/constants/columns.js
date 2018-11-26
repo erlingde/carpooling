@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon, Tooltip, Divider, Popover } from 'antd';
+import { Icon, Tooltip, Divider } from 'antd';
 
 const columns = [{
     title: 'From',
@@ -29,9 +29,9 @@ const columns = [{
     dataIndex: 'link',
     render: (text, record) => (
       <span>
-        <Popover content={record.details ? record.details : <Icon type="loading" style={{ fontSize: 16 }} spin />}>
+        <Tooltip placement="right" title={record.details ? record.details : <Icon type="loading" style={{ fontSize: 16 }} spin />}>
           <Icon type="info-circle" style={{ fontSize: '18px', color: 'red' }} />
-        </Popover>
+        </Tooltip>
         <Divider type="vertical" style={{backgroundColor: 'grey'}}/>
         <a href={record.link} rel="noopener noreferrer" target="_blank">Samferða</a>
       </span>
