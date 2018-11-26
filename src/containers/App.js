@@ -158,7 +158,7 @@ class App extends Component {
 
     this.selectedFilterFrom = [];
     this.selectedFilterTo = [];
-
+    console.log('refreshing');
     this.setState({
       tableLoading: true,
       refreshIconHover: false
@@ -217,7 +217,7 @@ class App extends Component {
 
     return (
     <Content>
-      <div style={{ display: 'inline-block', border: '1px solid black', borderRadius: '10px', background: '#e9ebee', padding: '25px', boxShadow: '5px 10px', width: '600px' }}>
+      <div style={{ display: 'inline-block', border: '1px solid black', borderRadius: '10px', background: '#e9ebee', padding: window.innerWidth < 600 ? '10px 5px' : '25px', boxShadow: '5px 10px',  }}>
         <Row type="flex" align='middle'>
           <Col xs={{ span: 23, offset: 1 }}>
             <Radio.Group size={window.innerWidth < 600 ? 'small' : 'large'} onChange={onRadioChange} defaultValue="ride" buttonStyle="solid" style={{'verticalAlign': 'top'}}>
@@ -290,12 +290,16 @@ class App extends Component {
               onRow={record => {
                 return {
                   onMouseEnter: async () => {
-                    if (moment(record.date, 'YYYY-MM-DD').isAfter(Date.now)) { // Prevents the user from hovering over expired data
-                      fetchData();
-                    } else if (!record.details) {
-                      await api.fetchURL(record.link).then(res => {
+                    if (!record.details) {
+                      const link = record.link === 'http://www.samferda.net/en/detail/101033' ? 'http://www.samferda.net/en/detail/101455' : record.link;
+                      await api.fetchURL(link).then(res => {
                         record.details = scraper.scrapeHtml(res.data);
-                        this.forceUpdate();
+
+                        if (record.details === undefined) {
+                          fetchData();
+                        } else {
+                          this.forceUpdate();
+                        }
                       });
                     }
                   }
@@ -311,7 +315,7 @@ class App extends Component {
 
   renderFooter = () => {
     return (
-      <Footer style={{position:'sticky', bottom: '0', fontSize: '12px', borderTop: 'solid 1px black', backgroundColor: '#141E30' }}>
+      <Footer style={{ marginTop: '30px', fontSize: '12px', borderTop: 'solid 1px black', backgroundColor: '#141E30' }}>
         <Row type="flex" justify="center" gutter={16} align="middle">
           <Col className="gutter-row" xs={8} md={3}>
             <a className='footer_link' href='http://www.samferda.net/' rel="noopener noreferrer" target="_blank">

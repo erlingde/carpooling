@@ -4,6 +4,12 @@ import cheerio from 'cheerio';
 const scrapeHtml = (data) => {
     const $ = cheerio.load(data);
 
+    // Checks if the data is expired
+    if ($('tr:nth-child(6)').children()[1] === undefined) {
+        console.log('returning undefined from scraper');
+        return undefined;
+    }
+
     const seats = !$('tr:nth-child(6)').children()[1].children[0] ? undefined : $('tr:nth-child(6)').children()[1].children[0].data;
     const name = !$('tr:nth-child(7)').children()[1].children[0] ? undefined : $('tr:nth-child(7)').children()[1].children[0].data;
     const phone =  !$('tr:nth-child(8)').children()[1].children[0] ? undefined : $('tr:nth-child(8)').children()[1].children[0].data;
