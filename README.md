@@ -1,4 +1,5 @@
 ## Carpooling
+[![CircleCI](https://circleci.com/gh/erlingde/carpooling/tree/master.svg?style=svg)](https://circleci.com/gh/erlingde/carpooling/tree/master)<br>
 Project can be viewed [here](https://erlingde.github.io/carpooling).<br>
 Lists all carpooling requests on www.samferda.net but filters out the ones with invalid dates.<br>
 Uses an API provided by [www.apis.is](http://docs.apis.is/#endpoint-rides)<br>
