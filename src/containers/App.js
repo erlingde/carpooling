@@ -1,15 +1,23 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 import { Row, Col, Radio, Select, Table, Icon, Tooltip, Layout } from 'antd';
-import _ from 'lodash';
 
-import api from '../services/api';
-import scraper from '../services/scraper';
+import api from '../utils/api';
+import scraper from '../utils/scraper';
 
 import columns from '../constants/columns'
 
 import './App.css';
 import apisLogo from '../assets/apis2.png';
+import circleCI from '../assets/circleci.svg';
+import redux from '../assets/redux.svg';
+import react from '../assets/react.svg';
+import nodeJS from '../assets/nodejs.svg';
+import webpack from '../assets/webpack.svg';
+import storybook from '../assets/storybook.png';
+
+import _ from 'lodash';
+
 
 const { Header, Footer, Content } = Layout;
 
@@ -307,9 +315,100 @@ class App extends Component {
     );
   }
 
+  renderInformation = () => {
+    return (
+      <Row key='key' type="flex" justify="center" align="middle" style={{ marginTop: '50px', backgroundColor: '#e9ebee', padding: 'calc(35.91549px + 3.75587vw) 10%' }}>
+        <Col xs={24}>
+          <h2>
+            Technology used
+          </h2>
+        </Col>
+        <Col xs={12} md={8}>
+          <div style={{ padding: 'calc(20.25352px + 2.06573vw) calc(11.77465px + 1.12676vw)', display: 'flex' }}>
+            <img src={react} alt ='react' style={{ maxHeight: 'calc(20.25352px + 2.06573vw)', maxWidth: 'calc(20.25352px + 2.06573vw)', marginRight: 'calc(8.83099px + .84507vw)' }} />
+            <div>
+              <div style={{ fontSize: 'calc(8.83099px + .84507vw)' }}>
+                React
+              </div>
+              <div style={{ fontSize: 'calc(6.53521px + .65728vw)', color: '#6f7489' }}>
+                JavaScript library for building user interfaces
+              </div>
+            </div>
+          </div>
+        </Col>
+        <Col xs={12} md={8}>
+          <div style={{ padding: 'calc(20.25352px + 2.06573vw) calc(11.77465px + 1.12676vw)', display: 'flex' }}>
+            <img src={redux} alt ='redux' style={{ maxHeight: 'calc(20.25352px + 2.06573vw)', maxWidth: 'calc(20.25352px + 2.06573vw)', marginRight: 'calc(8.83099px + .84507vw)' }} />
+            <div>
+              <div style={{ fontSize: 'calc(8.83099px + .84507vw)' }}>
+                Redux
+              </div>
+              <div style={{ fontSize: 'calc(6.53521px + .65728vw)', color: '#6f7489' }}>
+                JavaScript library for managing application state
+              </div>
+            </div>
+          </div>
+        </Col>
+        <Col xs={12} md={8}>
+          <div style={{ padding: 'calc(20.25352px + 2.06573vw) calc(11.77465px + 1.12676vw)', display: 'flex' }}>
+            <img src={nodeJS} alt ='nodeJS' style={{ maxHeight: 'calc(20.25352px + 2.06573vw)', maxWidth: 'calc(20.25352px + 2.06573vw)', marginRight: 'calc(8.83099px + .84507vw)' }} />
+            <div>
+              <div style={{ fontSize: 'calc(8.83099px + .84507vw)' }}>
+                NodeJS
+              </div>
+              <div style={{ fontSize: 'calc(6.53521px + .65728vw)', color: '#6f7489' }}>
+                Cross-platform JavaScript run-time environment
+              </div>
+            </div>
+          </div>
+        </Col>
+        <Col xs={12} md={8}>
+          <div style={{ padding: 'calc(20.25352px + 2.06573vw) calc(11.77465px + 1.12676vw)', display: 'flex' }}>
+            <img src={circleCI} alt ='circleci' style={{ maxHeight: 'calc(20.25352px + 2.06573vw)', maxWidth: 'calc(20.25352px + 2.06573vw)', marginRight: 'calc(8.83099px + .84507vw)' }} />
+            <div>
+              <div style={{ fontSize: 'calc(8.83099px + .84507vw)' }}>
+                CircleCI
+              </div>
+              <div style={{ fontSize: 'calc(6.53521px + .65728vw)', color: '#6f7489' }}>
+                Continuous Integration system
+              </div>
+            </div>
+          </div>
+        </Col>
+
+        <Col xs={12} md={8}>
+          <div style={{ padding: 'calc(20.25352px + 2.06573vw) calc(11.77465px + 1.12676vw)', display: 'flex' }}>
+            <img src={webpack} alt ='webpack' style={{ maxHeight: 'calc(20.25352px + 2.06573vw)', maxWidth: 'calc(20.25352px + 2.06573vw)', marginRight: 'calc(8.83099px + .84507vw)' }} />
+            <div>
+              <div style={{ fontSize: 'calc(8.83099px + .84507vw)' }}>
+                Webpack
+              </div>
+              <div style={{ fontSize: 'calc(6.53521px + .65728vw)', color: '#6f7489' }}>
+                JavaScript module bundler
+              </div>
+            </div>
+          </div>
+        </Col>
+        <Col xs={12} md={8}>
+        <div style={{ padding: 'calc(20.25352px + 2.06573vw) calc(11.77465px + 1.12676vw)', display: 'flex' }}>
+            <img src={storybook} alt ='storybook' style={{ maxHeight: 'calc(20.25352px + 2.06573vw)', maxWidth: 'calc(20.25352px + 2.06573vw)', marginRight: 'calc(8.83099px + .84507vw)' }} />
+            <div>
+              <div style={{ fontSize: 'calc(8.83099px + .84507vw)' }}>
+                Storybook
+              </div>
+              <div style={{ fontSize: 'calc(6.53521px + .65728vw)', color: '#6f7489' }}>
+                UI development environment
+              </div>
+            </div>
+          </div>
+        </Col>
+      </Row>
+    );
+  }
+
   renderFooter = () => {
     return (
-      <Footer style={{ marginTop: '30px', fontSize: '12px', borderTop: 'solid 1px black', backgroundColor: '#141E30' }}>
+      <Footer style={{ fontSize: '12px', borderTop: 'solid 1px black', backgroundColor: '#141E30' }}>
         <Row type="flex" justify="center" gutter={16} align="middle">
           <Col className="gutter-row" xs={8} md={3}>
             <a className='footer_link' href='http://www.samferda.net/' rel="noopener noreferrer" target="_blank">
@@ -337,6 +436,7 @@ class App extends Component {
         <Layout style={{ background: 'linear-gradient(to right, #243B55, #141E30)', minHeight: '100vh', fontSize: 'calc(10px + 2vmin)' }}>
           {this.renderHeader()}
           {this.renderContent()}
+          {this.renderInformation()}
           {this.renderFooter()}
         </Layout>
       </div>
