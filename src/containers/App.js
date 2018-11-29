@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import moment from 'moment';
-import { Row, Col, Radio, Select, Table, Icon, Tooltip, Layout } from 'antd';
+import { Row, Col, Radio, Select, Layout } from 'antd';
+
+import TripTable from '../components/TripTable';
+import FilterButton from '../components/FilterButton';
+import RefreshButton from '../components/RefreshButton';
 
 import api from '../utils/api';
-import scraper from '../utils/scraper';
 
-import columns from '../constants/columns'
-
-import './App.css';
 import apisLogo from '../assets/apis2.png';
 import circleCI from '../assets/circleci.svg';
 import redux from '../assets/redux.svg';
@@ -18,6 +18,7 @@ import storybook from '../assets/storybook.png';
 
 import _ from 'lodash';
 
+import './App.css';
 
 const { Header, Footer, Content } = Layout;
 
@@ -201,6 +202,10 @@ class App extends Component {
       windowWidth: window.innerWidth
     });
   }
+  
+  updateCallback = () => {
+    this.forceUpdate();
+  }
 
   renderHeader = () => {
     return (
@@ -217,8 +222,8 @@ class App extends Component {
   }
 
   renderContent = () => {
-    const { filteredTrips, tableLoading, refreshIconHover, refreshIconClicked, secondsUntilRefresh } = this.state;
-    const { handleFilterChange, onRadioChange, handleRefreshHoverEnter, handleRefreshHoverLeave, tripFilter, selectedFilterFrom, selectedFilterTo, handleRefreshClick, fetchData, locations } = this;
+    const { filteredTrips, tableLoading, refreshIconHover, refreshIconClicked, secondsUntilRefresh, windowWidth } = this.state;
+    const { updateCallback, handleFilterChange, onRadioChange, handleRefreshHoverEnter, handleRefreshHoverLeave, tripFilter, selectedFilterFrom, selectedFilterTo, handleRefreshClick, fetchData, locations } = this;
 
     return (
     <Content>
@@ -226,29 +231,17 @@ class App extends Component {
         <Row type="flex" align='middle'>
           <Col xs={{ span: 23, offset: 1 }}>
             <Radio.Group size={window.innerWidth < 600 ? 'small' : 'large'} onChange={onRadioChange} defaultValue="ride" buttonStyle="solid" style={{'verticalAlign': 'top'}}>
-              <Tooltip title="Passengers seeking rides">
-                  <Radio.Button value="ride" checked={tripFilter === 'ride' ? true : false}>
-                    Ride
-                    <Icon type="car" style={{'marginLeft': '6px'}}/>
-                  </Radio.Button>
-              </Tooltip>
-              <Tooltip title="Drivers seeking passengers">
-                  <Radio.Button value="passenger"checked={tripFilter === 'passenger' ? true : false}>
-                      Passengers
-                      <Icon type="user-add" style={{'marginLeft': '6px'}}/>
-                    </Radio.Button>
-              </Tooltip>
+              <FilterButton title="Passengers seeking rides" value="ride" tripFilter={tripFilter} type="Ride" />
+              <FilterButton title="Drivers seeeking passengers" value="passenger" tripFilter={tripFilter} type="Passengers" />
             </Radio.Group>
-            <Tooltip title={refreshIconClicked ? `Available to refresh in ${secondsUntilRefresh}s` : 'Refresh'}>
-              <Icon
-                type="sync"
-                spin={refreshIconHover}
-                style={refreshIconClicked ? {float: 'right', marginRight: '6px', cursor: 'not-allowed'} : { float: 'right', marginRight: '6px' , cursor: 'pointer'}}
-                onClick={handleRefreshClick}
-                onMouseEnter={handleRefreshHoverEnter}
-                onMouseLeave={handleRefreshHoverLeave}
-              />
-            </Tooltip>
+            <RefreshButton 
+              refreshIconClicked={refreshIconClicked}
+              secondsUntilRefresh={secondsUntilRefresh}
+              spin={refreshIconHover}
+              onClick={handleRefreshClick}
+              onMouseEnter={handleRefreshHoverEnter}
+              onMouseLeave={handleRefreshHoverLeave}
+            />
           </Col>
         </Row>
         <Row type="flex" justify="center">
@@ -285,29 +278,7 @@ class App extends Component {
         </Row>
         <Row type="flex" justify="center">
           <Col xs={24}>
-            <Table
-              columns={columns}
-              dataSource={filteredTrips}
-              loading={tableLoading}
-              style={{ 'backgroundColor': '#e9ebee' }}
-              size={window.innerWidth < 600 ? 'small' : 'middle'}
-              onRow={record => {
-                return {
-                  onMouseEnter: async () => {
-                    if (!record.details) {
-                      await api.fetchURL(record.link).then(res => {
-                        record.details = scraper.scrapeHtml(res.data);
-                        if (record.details === undefined) {
-                          fetchData();
-                        } else {
-                          this.forceUpdate();
-                        }
-                      });
-                    }
-                  }
-                }
-              }}
-            />
+            <TripTable data={filteredTrips} windowWidth={windowWidth} tableLoading={tableLoading} fetchData={fetchData} update={updateCallback} />
           </Col>
         </Row>
       </div>
