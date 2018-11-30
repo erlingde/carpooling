@@ -25,3 +25,8 @@
   border-bottom: 1px solid black;
   background-color: #e9ebee;
 }
+
+@keyframes example {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

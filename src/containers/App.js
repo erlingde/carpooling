@@ -1,26 +1,18 @@
 import React, { Component } from 'react';
 import moment from 'moment';
-import { Row, Col, Radio, Select, Layout } from 'antd';
+import { Row, Col, Radio, Layout } from 'antd';
 
 import TripTable from '../components/TripTable';
 import FilterButton from '../components/FilterButton';
 import RefreshButton from '../components/RefreshButton';
+import TripFilter from '../components/TripFilter';
 
 import api from '../utils/api';
-
-import apisLogo from '../assets/apis2.png';
-import circleCI from '../assets/circleci.svg';
-import redux from '../assets/redux.svg';
-import react from '../assets/react.svg';
-import nodeJS from '../assets/nodejs.svg';
-import webpack from '../assets/webpack.svg';
-import storybook from '../assets/storybook.png';
+import logos from '../utils/logos.js';
 
 import _ from 'lodash';
 
 import './App.css';
-
-const { Header, Footer, Content } = Layout;
 
 class App extends Component {
   constructor(props) {
@@ -209,15 +201,15 @@ class App extends Component {
 
   renderHeader = () => {
     return (
-      <Header style={{ height: '100%', background: 'linear-gradient(to right, #243B55, #141E30)', lineHeight: window.innerWidth < 500 ? '40px' : '64px'}}>
+      <Layout.Header style={{ height: '100%', background: 'linear-gradient(to right, #243B55, #141E30)', lineHeight: window.innerWidth < 500 ? '40px' : '64px'}}>
         <Row type="flex" justify="center"  style={{ margin: '10px 0' }}>
           <Col xs={24} md={20} lg={18} xl={14}>
-            <h1 style={{ margin: '10px 0', color:'white' }}>
+            <h1 style={{ margin: '10px 0', color:'white',animationName: 'example', animationDuration: '2s'}}>
               Carpooling in Iceland
             </h1>
           </Col>
         </Row>
-      </Header>
+      </Layout.Header>
     );
   }
 
@@ -226,7 +218,7 @@ class App extends Component {
     const { updateCallback, handleFilterChange, onRadioChange, handleRefreshHoverEnter, handleRefreshHoverLeave, tripFilter, selectedFilterFrom, selectedFilterTo, handleRefreshClick, fetchData, locations } = this;
 
     return (
-    <Content>
+    <Layout.Content>
       <div style={{ display: 'inline-block', border: '1px solid black', borderRadius: '10px', background: '#e9ebee', padding: window.innerWidth < 600 ? '10px 5px' : '25px', boxShadow: '5px 10px',  }}>
         <Row type="flex" align='middle'>
           <Col xs={{ span: 23, offset: 1 }}>
@@ -246,34 +238,10 @@ class App extends Component {
         </Row>
         <Row type="flex" justify="center">
           <Col xs={12}>
-            <Select
-              mode="multiple"
-              style={{ width: '100%' }}
-              placeholder="From"
-              onChange={value => handleFilterChange(value, 'from')}
-              value={selectedFilterFrom}
-              allowClear={true}
-              maxTagCount={2}
-            >
-              {locations.map((item) =>
-                <Select.Option key={item}>{item}</Select.Option>
-              )}
-            </Select>
+            <TripFilter placeholder="From" onChange={value => handleFilterChange(value, 'from')} value={selectedFilterFrom} locations={locations} />
           </Col>
           <Col xs={12}>
-            <Select
-              mode="multiple"
-              style={{ width: '100%' }}
-              placeholder="To"
-              onChange={value => handleFilterChange(value, 'to')}
-              value={selectedFilterTo}
-              allowClear={true}
-              maxTagCount={2}
-            >
-            {locations.map((item) =>
-              <Select.Option key={item}>{item}</Select.Option>
-            )}
-          </Select>
+            <TripFilter placeholder="To" onChange={value => handleFilterChange(value, 'to')} value={selectedFilterTo} locations={locations} />
         </Col>
         </Row>
         <Row type="flex" justify="center">
@@ -282,7 +250,7 @@ class App extends Component {
           </Col>
         </Row>
       </div>
-    </Content>
+    </Layout.Content>
     );
   }
 
@@ -296,7 +264,7 @@ class App extends Component {
         </Col>
         <Col xs={12} md={8}>
           <div style={{ padding: 'calc(20.25352px + 2.06573vw) calc(11.77465px + 1.12676vw)', display: 'flex' }}>
-            <img src={react} alt ='react' style={{ maxHeight: 'calc(20.25352px + 2.06573vw)', maxWidth: 'calc(20.25352px + 2.06573vw)', marginRight: 'calc(8.83099px + .84507vw)' }} />
+            <img src={logos.react} alt ='react' style={{ maxHeight: 'calc(20.25352px + 2.06573vw)', maxWidth: 'calc(20.25352px + 2.06573vw)', marginRight: 'calc(8.83099px + .84507vw)' }} />
             <div>
               <div style={{ fontSize: 'calc(8.83099px + .84507vw)' }}>
                 React
@@ -309,7 +277,7 @@ class App extends Component {
         </Col>
         <Col xs={12} md={8}>
           <div style={{ padding: 'calc(20.25352px + 2.06573vw) calc(11.77465px + 1.12676vw)', display: 'flex' }}>
-            <img src={redux} alt ='redux' style={{ maxHeight: 'calc(20.25352px + 2.06573vw)', maxWidth: 'calc(20.25352px + 2.06573vw)', marginRight: 'calc(8.83099px + .84507vw)' }} />
+            <img src={logos.redux} alt ='redux' style={{ maxHeight: 'calc(20.25352px + 2.06573vw)', maxWidth: 'calc(20.25352px + 2.06573vw)', marginRight: 'calc(8.83099px + .84507vw)' }} />
             <div>
               <div style={{ fontSize: 'calc(8.83099px + .84507vw)' }}>
                 Redux
@@ -322,7 +290,7 @@ class App extends Component {
         </Col>
         <Col xs={12} md={8}>
           <div style={{ padding: 'calc(20.25352px + 2.06573vw) calc(11.77465px + 1.12676vw)', display: 'flex' }}>
-            <img src={nodeJS} alt ='nodeJS' style={{ maxHeight: 'calc(20.25352px + 2.06573vw)', maxWidth: 'calc(20.25352px + 2.06573vw)', marginRight: 'calc(8.83099px + .84507vw)' }} />
+            <img src={logos.nodeJS} alt ='nodeJS' style={{ maxHeight: 'calc(20.25352px + 2.06573vw)', maxWidth: 'calc(20.25352px + 2.06573vw)', marginRight: 'calc(8.83099px + .84507vw)' }} />
             <div>
               <div style={{ fontSize: 'calc(8.83099px + .84507vw)' }}>
                 NodeJS
@@ -335,7 +303,7 @@ class App extends Component {
         </Col>
         <Col xs={12} md={8}>
           <div style={{ padding: 'calc(20.25352px + 2.06573vw) calc(11.77465px + 1.12676vw)', display: 'flex' }}>
-            <img src={circleCI} alt ='circleci' style={{ maxHeight: 'calc(20.25352px + 2.06573vw)', maxWidth: 'calc(20.25352px + 2.06573vw)', marginRight: 'calc(8.83099px + .84507vw)' }} />
+            <img src={logos.circleCI} alt ='circleci' style={{ maxHeight: 'calc(20.25352px + 2.06573vw)', maxWidth: 'calc(20.25352px + 2.06573vw)', marginRight: 'calc(8.83099px + .84507vw)' }} />
             <div>
               <div style={{ fontSize: 'calc(8.83099px + .84507vw)' }}>
                 CircleCI
@@ -349,7 +317,7 @@ class App extends Component {
 
         <Col xs={12} md={8}>
           <div style={{ padding: 'calc(20.25352px + 2.06573vw) calc(11.77465px + 1.12676vw)', display: 'flex' }}>
-            <img src={webpack} alt ='webpack' style={{ maxHeight: 'calc(20.25352px + 2.06573vw)', maxWidth: 'calc(20.25352px + 2.06573vw)', marginRight: 'calc(8.83099px + .84507vw)' }} />
+            <img src={logos.webpack} alt ='webpack' style={{ maxHeight: 'calc(20.25352px + 2.06573vw)', maxWidth: 'calc(20.25352px + 2.06573vw)', marginRight: 'calc(8.83099px + .84507vw)' }} />
             <div>
               <div style={{ fontSize: 'calc(8.83099px + .84507vw)' }}>
                 Webpack
@@ -362,7 +330,7 @@ class App extends Component {
         </Col>
         <Col xs={12} md={8}>
         <div style={{ padding: 'calc(20.25352px + 2.06573vw) calc(11.77465px + 1.12676vw)', display: 'flex' }}>
-            <img src={storybook} alt ='storybook' style={{ maxHeight: 'calc(20.25352px + 2.06573vw)', maxWidth: 'calc(20.25352px + 2.06573vw)', marginRight: 'calc(8.83099px + .84507vw)' }} />
+            <img src={logos.storybook} alt ='storybook' style={{ maxHeight: 'calc(20.25352px + 2.06573vw)', maxWidth: 'calc(20.25352px + 2.06573vw)', marginRight: 'calc(8.83099px + .84507vw)' }} />
             <div>
               <div style={{ fontSize: 'calc(8.83099px + .84507vw)' }}>
                 Storybook
@@ -379,7 +347,7 @@ class App extends Component {
 
   renderFooter = () => {
     return (
-      <Footer style={{ fontSize: '12px', borderTop: 'solid 1px black', backgroundColor: '#141E30' }}>
+      <Layout.Footer style={{ fontSize: '12px', borderTop: 'solid 1px black', backgroundColor: '#141E30' }}>
         <Row type="flex" justify="center" gutter={16} align="middle">
           <Col className="gutter-row" xs={8} md={3}>
             <a className='footer_link' href='http://www.samferda.net/' rel="noopener noreferrer" target="_blank">
@@ -388,7 +356,7 @@ class App extends Component {
           </Col>
           <Col className="gutter-row" xs={8} md={3}>
             <a className='footer_link' href='https://www.apis.is' rel="noopener noreferrer" target="_blank">
-              <img src={apisLogo} alt="apis.is" style={{ height:'2em', width:'2em', verticalAlign: 'sub' }}></img>
+              <img src={logos.apisLogo} alt="apis.is" style={{ height:'2em', width:'2em', verticalAlign: 'sub' }}></img>
             </a>
           </Col>
           <Col className="gutter-row" xs={8} md={3}>
@@ -397,7 +365,7 @@ class App extends Component {
             </a>
           </Col>
         </Row>
-      </Footer>
+      </Layout.Footer>
     );
   }
 
