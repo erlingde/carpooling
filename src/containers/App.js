@@ -198,15 +198,19 @@ class App extends Component {
   updateCallback = () => {
     this.forceUpdate();
   }
-
+/*<h1 style={{ margin: '10px 0', color:'white',animationName: 'example', animationDuration: '2s'}}>
+  Carpooling in Iceland
+</h1>*/
   renderHeader = () => {
     return (
-      <Layout.Header style={{ height: '100%', background: 'linear-gradient(to right, #243B55, #141E30)', lineHeight: window.innerWidth < 500 ? '40px' : '64px'}}>
-        <Row type="flex" justify="center"  style={{ margin: '10px 0' }}>
+      <Layout.Header style={{ padding: '10px', height: '100%', background: 'linear-gradient(to right, #243B55, #141E30)', lineHeight: window.innerWidth < 500 ? '40px' : '64px' }}>
+        <Row type="flex" justify="center" >
           <Col xs={24} md={20} lg={18} xl={14}>
-            <h1 style={{ margin: '10px 0', color:'white',animationName: 'example', animationDuration: '2s'}}>
-              Carpooling in Iceland
-            </h1>
+
+              <h1>Carpooling in Iceland</h1>
+              <hr className="brace" />
+
+        
           </Col>
         </Row>
       </Layout.Header>
