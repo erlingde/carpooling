@@ -10,6 +10,8 @@ import TripFilter from '../components/TripFilter';
 import api from '../utils/api';
 import logos from '../utils/logos.js';
 
+import funkyLines from '../assets/funky-lines.png';
+
 import _ from 'lodash';
 
 import './App.css';
@@ -198,19 +200,14 @@ class App extends Component {
   updateCallback = () => {
     this.forceUpdate();
   }
-/*<h1 style={{ margin: '10px 0', color:'white',animationName: 'example', animationDuration: '2s'}}>
-  Carpooling in Iceland
-</h1>*/
+
   renderHeader = () => {
     return (
       <Layout.Header style={{ padding: '10px', height: '100%', background: 'linear-gradient(to right, #243B55, #141E30)', lineHeight: window.innerWidth < 500 ? '40px' : '64px' }}>
         <Row type="flex" justify="center" >
-          <Col xs={24} md={20} lg={18} xl={14}>
-
-              <h1>Carpooling in Iceland</h1>
-              <hr className="brace" />
-
-        
+          <Col xs={22} md={20} lg={18} xl={14}>
+            <h1>Carpooling in Iceland</h1>
+            <hr className="brace" />
           </Col>
         </Row>
       </Layout.Header>
@@ -223,7 +220,14 @@ class App extends Component {
 
     return (
     <Layout.Content>
-      <div style={{ display: 'inline-block', border: '1px solid black', borderRadius: '10px', background: '#e9ebee', padding: window.innerWidth < 600 ? '10px 5px' : '25px', boxShadow: '5px 10px',  }}>
+      <div style={{ 
+        display: 'inline-block',
+        border: '1px solid black',
+        borderRadius: '10px',
+        background: '#e9ebee',
+        padding: window.innerWidth < 600 ? '10px 5px' : '25px',
+        boxShadow: '5px 10px'
+      }}>
         <Row type="flex" align='middle'>
           <Col xs={{ span: 23, offset: 1 }}>
             <Radio.Group size={window.innerWidth < 600 ? 'small' : 'large'} onChange={onRadioChange} defaultValue="ride" buttonStyle="solid" style={{'verticalAlign': 'top'}}>
@@ -260,7 +264,17 @@ class App extends Component {
 
   renderInformation = () => {
     return (
-      <Row key='key' type="flex" justify="center" align="middle" style={{ marginTop: '50px', backgroundColor: '#e9ebee', padding: 'calc(35.91549px + 3.75587vw) 10%' }}>
+      <Row
+      key='key'
+      type="flex"
+      justify="center"
+      align="middle"
+      style={{
+        marginTop: '50px',
+        backgroundImage: `url(${funkyLines})`,
+        padding: 'calc(35.91549px + 3.75587vw) 10%',
+        borderTop: '1px solid black'
+      }}>
         <Col xs={24}>
           <h2>
             Technology used
@@ -351,7 +365,7 @@ class App extends Component {
 
   renderFooter = () => {
     return (
-      <Layout.Footer style={{ fontSize: '12px', borderTop: 'solid 1px black', backgroundColor: '#141E30' }}>
+      <Layout.Footer style={{ fontSize: '12px', borderTop: 'solid 2px black', backgroundColor: '#141E30' }}>
         <Row type="flex" justify="center" gutter={16} align="middle">
           <Col className="gutter-row" xs={8} md={3}>
             <a className='footer_link' href='http://www.samferda.net/' rel="noopener noreferrer" target="_blank">
