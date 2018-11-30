@@ -90,3 +90,7 @@ h1 {
   box-sizing: border-box;
   margin-top: -5px;
 }
+
+.detailsCol {
+  text-align: center;
+}
