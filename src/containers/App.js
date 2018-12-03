@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import moment from 'moment';
 import { Row, Col, Radio, Layout } from 'antd';
 
@@ -15,6 +16,7 @@ import funkyLines from '../assets/funky-lines.png';
 import _ from 'lodash';
 
 import './App.css';
+import { toggleTodo } from '../redux/actions';
 
 class App extends Component {
   constructor(props) {
@@ -219,46 +221,46 @@ class App extends Component {
     const { updateCallback, handleFilterChange, onRadioChange, handleRefreshHoverEnter, handleRefreshHoverLeave, tripFilter, selectedFilterFrom, selectedFilterTo, handleRefreshClick, fetchData, locations } = this;
 
     return (
-    <Layout.Content>
-      <div style={{ 
-        display: 'inline-block',
-        border: '1px solid black',
-        borderRadius: '10px',
-        background: '#e9ebee',
-        padding: window.innerWidth < 600 ? '10px 5px' : '25px',
-        boxShadow: '5px 10px'
-      }}>
-        <Row type="flex" align='middle'>
-          <Col xs={{ span: 23, offset: 1 }}>
-            <Radio.Group size={window.innerWidth < 600 ? 'small' : 'large'} onChange={onRadioChange} defaultValue="ride" buttonStyle="solid" style={{'verticalAlign': 'top'}}>
-              <FilterButton title="Passengers seeking rides" value="ride" tripFilter={tripFilter} type="Ride" />
-              <FilterButton title="Drivers seeeking passengers" value="passenger" tripFilter={tripFilter} type="Passengers" />
-            </Radio.Group>
-            <RefreshButton 
-              refreshIconClicked={refreshIconClicked}
-              secondsUntilRefresh={secondsUntilRefresh}
-              spin={refreshIconHover}
-              onClick={handleRefreshClick}
-              onMouseEnter={handleRefreshHoverEnter}
-              onMouseLeave={handleRefreshHoverLeave}
-            />
+      <Layout.Content>
+        <div style={{ 
+          display: 'inline-block',
+          border: '1px solid black',
+          borderRadius: '10px',
+          background: '#e9ebee',
+          padding: window.innerWidth < 600 ? '10px 5px' : '25px',
+          boxShadow: '5px 10px'
+        }}>
+          <Row type="flex" align='middle'>
+            <Col xs={{ span: 23, offset: 1 }}>
+              <Radio.Group size={window.innerWidth < 600 ? 'small' : 'large'} onChange={onRadioChange} defaultValue="ride" buttonStyle="solid" style={{'verticalAlign': 'top'}}>
+                <FilterButton title="Passengers seeking rides" value="ride" tripFilter={tripFilter} type="Ride" />
+                <FilterButton title="Drivers seeeking passengers" value="passenger" tripFilter={tripFilter} type="Passengers" />
+              </Radio.Group>
+              <RefreshButton 
+                refreshIconClicked={refreshIconClicked}
+                secondsUntilRefresh={secondsUntilRefresh}
+                spin={refreshIconHover}
+                onClick={handleRefreshClick}
+                onMouseEnter={handleRefreshHoverEnter}
+                onMouseLeave={handleRefreshHoverLeave}
+              />
+            </Col>
+          </Row>
+          <Row type="flex" justify="center">
+            <Col xs={12}>
+              <TripFilter placeholder="From" onChange={value => handleFilterChange(value, 'from')} value={selectedFilterFrom} locations={locations} />
+            </Col>
+            <Col xs={12}>
+              <TripFilter placeholder="To" onChange={value => handleFilterChange(value, 'to')} value={selectedFilterTo} locations={locations} />
           </Col>
-        </Row>
-        <Row type="flex" justify="center">
-          <Col xs={12}>
-            <TripFilter placeholder="From" onChange={value => handleFilterChange(value, 'from')} value={selectedFilterFrom} locations={locations} />
-          </Col>
-          <Col xs={12}>
-            <TripFilter placeholder="To" onChange={value => handleFilterChange(value, 'to')} value={selectedFilterTo} locations={locations} />
-        </Col>
-        </Row>
-        <Row type="flex" justify="center">
-          <Col xs={24}>
-            <TripTable data={filteredTrips} windowWidth={windowWidth} tableLoading={tableLoading} fetchData={fetchData} update={updateCallback} />
-          </Col>
-        </Row>
-      </div>
-    </Layout.Content>
+          </Row>
+          <Row type="flex" justify="center">
+            <Col xs={24}>
+              <TripTable data={filteredTrips} windowWidth={windowWidth} tableLoading={tableLoading} fetchData={fetchData} update={updateCallback} />
+            </Col>
+          </Row>
+        </div>
+      </Layout.Content>
     );
   }
 
@@ -410,4 +412,21 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapStateToProps = state => {
+  console.log(state)
+  return {
+    carpooling: state
+  }
+}
+
+
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onTodoClick: id => {
+      dispatch(toggleTodo(id))
+    }
+  }
+}
+
+export default connect(mapStateToProps)(App);
