@@ -8,6 +8,9 @@ import FilterButton from '../components/FilterButton';
 import RefreshButton from '../components/RefreshButton';
 import TripFilter from '../components/TripFilter';
 
+import store from '../redux/store';
+import { addLocations } from '../redux/actions';
+
 import api from '../utils/api';
 import logos from '../utils/logos.js';
 
@@ -16,7 +19,6 @@ import funkyLines from '../assets/funky-lines.png';
 import _ from 'lodash';
 
 import './App.css';
-import { toggleTodo } from '../redux/actions';
 
 class App extends Component {
   constructor(props) {
@@ -180,6 +182,7 @@ class App extends Component {
         });
   
         this.locations = populateLocations([...this.fetchedRideRequests, ...this.fetchedPassengerRequests], []).sort();
+        store.dispatch(addLocations(this.locations));
 
         this.setState({
           filteredTrips: tripFilter === 'passenger' ? this.fetchedPassengerRequests : this.fetchedRideRequests,
@@ -413,20 +416,18 @@ class App extends Component {
 }
 
 const mapStateToProps = state => {
-  console.log(state)
+  console.log(state);
   return {
     carpooling: state
   }
 }
 
-
-
 const mapDispatchToProps = dispatch => {
   return {
-    onTodoClick: id => {
-      dispatch(toggleTodo(id))
+    addLocations: locations => {
+      dispatch(addLocations(locations))
     }
   }
 }
 
-export default connect(mapStateToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);
