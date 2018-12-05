@@ -1,12 +1,15 @@
 import { ADD_LOCATIONS } from "../actionTypes";
 
-const initialState = [];
+const initialState = {
+  from: [],
+  to: []
+};
 
 const locations = (state = initialState, action) => {
   switch (action.type) {
     case ADD_LOCATIONS:
-    //return { ...state, locations: [action.payload] };
-    return action.payload;
+      //return { ...state, locations: [action.payload] };
+      return action.payload;
     default:
       return state;
   }

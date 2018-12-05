@@ -27,7 +27,6 @@ class App extends Component {
     this.selectedFilterFrom = [];
     this.selectedFilterTo = [];
     this.refreshTimer = 5;
-    this.locations = [];
     this.fetchedPassengerRequests = [];
     this.fetchedRideRequests = [];
 
@@ -42,16 +41,22 @@ class App extends Component {
     };
   };
 
-  populateLocations = (results, tempLocations) => {
+  populateLocations = (results) => {
+    let tempFromLocations = [];
+    let tempToLocations = [];
+
     results.forEach((item) => {
-      if (item.from !== "" && !tempLocations.find((x) => item.from === x)) {
-        tempLocations.push(item.from);
-      } else if (item.to !== "" && !tempLocations.find((x) => item.to === x)) {
-        tempLocations.push(item.to);
+      if (item.from !== "" && !tempFromLocations.find((x) => item.from === x)) {
+        tempFromLocations.push(item.from);
+      } else if (item.to !== "" && !tempToLocations.find((x) => item.to === x)) {
+        tempToLocations.push(item.to);
       }
     });
-
-    return tempLocations;
+    
+    return {
+      from: tempFromLocations.sort(),
+      to: tempToLocations.sort()
+    };
   }
 
   onRadioChange = (event) => {
@@ -180,9 +185,9 @@ class App extends Component {
         [...this.fetchedPassengerRequests, ...this.fetchedRideRequests].forEach((item) => {
           item.key = item.link
         });
-  
-        this.locations = populateLocations([...this.fetchedRideRequests, ...this.fetchedPassengerRequests], []).sort();
-        store.dispatch(addLocations(this.locations));
+
+        const locations = populateLocations([...this.fetchedRideRequests, ...this.fetchedPassengerRequests]);
+        store.dispatch(addLocations(locations));
 
         this.setState({
           filteredTrips: tripFilter === 'passenger' ? this.fetchedPassengerRequests : this.fetchedRideRequests,
@@ -221,7 +226,7 @@ class App extends Component {
 
   renderContent = () => {
     const { filteredTrips, tableLoading, refreshIconHover, refreshIconClicked, secondsUntilRefresh, windowWidth } = this.state;
-    const { updateCallback, handleFilterChange, onRadioChange, handleRefreshHoverEnter, handleRefreshHoverLeave, tripFilter, selectedFilterFrom, selectedFilterTo, handleRefreshClick, fetchData, locations } = this;
+    const { updateCallback, handleFilterChange, onRadioChange, handleRefreshHoverEnter, handleRefreshHoverLeave, tripFilter, selectedFilterFrom, selectedFilterTo, handleRefreshClick, fetchData } = this;
 
     return (
       <Layout.Content>
@@ -251,10 +256,10 @@ class App extends Component {
           </Row>
           <Row type="flex" justify="center">
             <Col xs={12}>
-              <TripFilter placeholder="From" onChange={value => handleFilterChange(value, 'from')} value={selectedFilterFrom} locations={locations} />
+              <TripFilter placeholder="From" onChange={value => handleFilterChange(value, 'from')} value={selectedFilterFrom} />
             </Col>
             <Col xs={12}>
-              <TripFilter placeholder="To" onChange={value => handleFilterChange(value, 'to')} value={selectedFilterTo} locations={locations} />
+              <TripFilter placeholder="To" onChange={value => handleFilterChange(value, 'to')} value={selectedFilterTo} />
           </Col>
           </Row>
           <Row type="flex" justify="center">
@@ -415,13 +420,6 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  console.log(state);
-  return {
-    carpooling: state
-  }
-}
-
 const mapDispatchToProps = dispatch => {
   return {
     addLocations: locations => {
@@ -430,4 +428,4 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(null, mapDispatchToProps)(App);
