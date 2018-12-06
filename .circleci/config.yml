@@ -4,6 +4,10 @@
 #
 version: 2
 jobs:
+  workflow:
+    branches:
+    ignore:
+      - gh-pages
   build:
     branches:
       ignore:
