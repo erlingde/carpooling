@@ -37,6 +37,7 @@
     "@babel/core": "^7.1.6",
     "@storybook/react": "^4.0.9",
     "babel-loader": "^8.0.4",
-    "gh-pages": "^2.0.1"
+    "gh-pages": "^2.0.1",
+    "redux-devtools-extension": "^2.13.7"
   }
 }
