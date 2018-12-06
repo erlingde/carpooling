@@ -4,14 +4,10 @@
 #
 version: 2
 jobs:
-  workflow:
-    branches:
-      ignore:
-        - gh-pages
   build:
     branches:
-      ignore:
-        - gh-pages
+      only:
+        - master
     docker:
       # specify the version you desire here
       - image: circleci/node:8.12
