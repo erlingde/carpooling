@@ -4,8 +4,8 @@ self.__precacheManifest = [
     "url": "/carpooling/static/media/redux.5ae1af16.svg"
   },
   {
-    "revision": "b964bd29aa6fba3ab978",
-    "url": "/carpooling/static/css/main.73ef5622.chunk.css"
+    "revision": "775b519a1e53c963778c",
+    "url": "/carpooling/static/css/main.693faa2e.chunk.css"
   },
   {
     "revision": "7c2eac8723aa1d62fc78876d36bb3833",
@@ -24,8 +24,8 @@ self.__precacheManifest = [
     "url": "/carpooling/static/media/circleci.b0cccdf5.svg"
   },
   {
-    "revision": "b964bd29aa6fba3ab978",
-    "url": "/carpooling/static/js/main.b964bd29.chunk.js"
+    "revision": "775b519a1e53c963778c",
+    "url": "/carpooling/static/js/main.775b519a.chunk.js"
   },
   {
     "revision": "4009eef3b3e291f296e71962c70895c5",
@@ -48,7 +48,7 @@ self.__precacheManifest = [
     "url": "/carpooling/static/css/1.2f7450af.chunk.css"
   },
   {
-    "revision": "4b631cf5bf21f8bca404296ea16938e0",
+    "revision": "964ad9ba92c5993a4a2b4f25ae58e605",
     "url": "/carpooling/index.html"
   }
 ];
