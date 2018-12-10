@@ -1,15 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Row, Col, Radio, Layout } from 'antd';
+import { Row, Col, Layout } from 'antd';
 
 import TripTable from '../components/TripTable';
 import FilterButton from '../components/FilterButton';
 import RefreshButton from '../components/RefreshButton';
 import TripFilter from '../components/TripFilter';
-
-import store from '../redux/store';
-import { addLocations } from '../redux/actions';
 
 import api from '../utils/api';
 import logos from '../utils/logos.js';
@@ -26,18 +23,17 @@ class App extends Component {
 
     this.selectedFilterFrom = [];
     this.selectedFilterTo = [];
-    this.refreshTimer = 5;
     this.fetchedPassengerRequests = [];
     this.fetchedRideRequests = [];
 
     this.state = {
-      tripFilter: 'ride',
       filteredTrips: [],
       tableLoading: true,
-      refreshIconHover: false,
-      refreshIconClicked: false,
-      secondsUntilRefresh: 5,
-      windowWidth: window.innerWidth
+      windowWidth: window.innerWidth,
+      locations: {
+        from: [],
+        to: []
+      }
     };
   };
 
@@ -59,93 +55,34 @@ class App extends Component {
     };
   }
 
-  onRadioChange = (event) => {
+  onRadioFilterChange = (value) => {
     const { fetchedRideRequests, fetchedPassengerRequests } = this;
 
     this.selectedFilterFrom = [];
     this.selectedFilterTo = [];
 
     this.setState({
-      filteredTrips: event.target.value === 'ride' ? fetchedRideRequests : fetchedPassengerRequests,
-      tripFilter: event.target.value
+      filteredTrips: value === 'ride' ? fetchedRideRequests : fetchedPassengerRequests
     });
   }
 
-  handleRefreshHoverEnter = (event) => {
-    const { refreshIconClicked } = this.state;
-
-    if (refreshIconClicked) {
-      return;
-    }
-
-    this.setState({
-      refreshIconHover: true
-    });
-  }
-
-  handleRefreshHoverLeave = (event) => {
-    this.setState({
-      refreshIconHover: false
-    });
-  }
-
-  handleFilterChange = (value, type) => {
-    const { filterLocations } = this;
-
-    if (type === 'from') {
-      this.selectedFilterFrom = value;
-    } else {
-      this.selectedFilterTo = value;
-    }
-
-    const filteredLocations = filterLocations(type);
-
+  handleFilterChange = () => {
+    this.forceUpdate();
+    const filteredLocations = this.filterLocations();
+    
     this.setState({
       filteredTrips: filteredLocations
     });
   }
 
-  handleRefreshClick = () => {
-    const { refreshIconClicked } = this.state;
-    const { fetchData } = this;
-
-    if (refreshIconClicked) {
-      return;
-    }
-
-    this.setState({
-      refreshIconClicked: true
-    }, async () => {
-      const timer = await setInterval(() => {
-        this.setState({
-          secondsUntilRefresh: --this.refreshTimer
-        });
-        if (this.refreshTimer === 0) {
-          clearInterval(timer);
-        }
-      }, 1000);
-      
-      await setTimeout(() => {
-        this.refreshTimer = 5;
-        this.setState({
-          refreshIconClicked: false,
-          secondsUntilRefresh: 5
-        });
-      }, 5000);
-      
-    });
-    
-    fetchData();
-  }
-
-  filterLocations = (type) => {
-    const { tripFilter } = this.state;
-    const { selectedFilterFrom, selectedFilterTo, fetchedPassengerRequests, fetchedRideRequests } = this;
+  filterLocations = () => {
+    const { selectedFilterFrom, selectedFilterTo, tripFilter } = this.props;
+    const { fetchedPassengerRequests, fetchedRideRequests } = this;
 
     let tempRequests = [];
     const selectedRequest = tripFilter === 'ride' ? fetchedRideRequests : fetchedPassengerRequests;
-    
-    if (selectedFilterFrom.length === 0 && selectedFilterTo.length === 0) {
+
+    if (this.props.selectedFilterFrom.length === 0 && this.props.selectedFilterTo.length === 0) {
       return tripFilter === 'passenger' ? fetchedPassengerRequests : fetchedRideRequests;
     }
 
@@ -165,7 +102,7 @@ class App extends Component {
   }
 
   fetchData = () => {
-    const { tripFilter } = this.state;
+    const { tripFilter } = this.props;
     const { populateLocations, filterRequestDates } = this;
 
     this.selectedFilterFrom = [];
@@ -187,11 +124,13 @@ class App extends Component {
         });
 
         const locations = populateLocations([...this.fetchedRideRequests, ...this.fetchedPassengerRequests]);
-        store.dispatch(addLocations(locations));
+        
+        //store.dispatch(addLocations(locations));
 
         this.setState({
           filteredTrips: tripFilter === 'passenger' ? this.fetchedPassengerRequests : this.fetchedRideRequests,
-          tableLoading: false
+          tableLoading: false,
+          locations: locations
         });
       });
     });
@@ -225,8 +164,8 @@ class App extends Component {
   }
 
   renderContent = () => {
-    const { filteredTrips, tableLoading, refreshIconHover, refreshIconClicked, secondsUntilRefresh, windowWidth } = this.state;
-    const { updateCallback, handleFilterChange, onRadioChange, handleRefreshHoverEnter, handleRefreshHoverLeave, tripFilter, selectedFilterFrom, selectedFilterTo, handleRefreshClick, fetchData } = this;
+    const { filteredTrips, tableLoading, windowWidth, locations } = this.state;
+    const { updateCallback, handleFilterChange, onRadioFilterChange, fetchData } = this;
 
     return (
       <Layout.Content>
@@ -240,28 +179,11 @@ class App extends Component {
         }}>
           <Row type="flex" align='middle'>
             <Col xs={{ span: 23, offset: 1 }}>
-              <Radio.Group size={window.innerWidth < 600 ? 'small' : 'large'} onChange={onRadioChange} defaultValue="ride" buttonStyle="solid" style={{'verticalAlign': 'top'}}>
-                <FilterButton title="Passengers seeking rides" value="ride" tripFilter={tripFilter} type="Ride" />
-                <FilterButton title="Drivers seeeking passengers" value="passenger" tripFilter={tripFilter} type="Passengers" />
-              </Radio.Group>
-              <RefreshButton 
-                refreshIconClicked={refreshIconClicked}
-                secondsUntilRefresh={secondsUntilRefresh}
-                spin={refreshIconHover}
-                onClick={handleRefreshClick}
-                onMouseEnter={handleRefreshHoverEnter}
-                onMouseLeave={handleRefreshHoverLeave}
-              />
+              <FilterButton onRadioFilterChange={onRadioFilterChange} />
+              <RefreshButton fetchData={fetchData} />
             </Col>
           </Row>
-          <Row type="flex" justify="center">
-            <Col xs={12}>
-              <TripFilter placeholder="From" onChange={value => handleFilterChange(value, 'from')} value={selectedFilterFrom} />
-            </Col>
-            <Col xs={12}>
-              <TripFilter placeholder="To" onChange={value => handleFilterChange(value, 'to')} value={selectedFilterTo} />
-          </Col>
-          </Row>
+          <TripFilter onChange={handleFilterChange} locations={locations} />
           <Row type="flex" justify="center">
             <Col xs={24}>
               <TripTable data={filteredTrips} windowWidth={windowWidth} tableLoading={tableLoading} fetchData={fetchData} update={updateCallback} />
@@ -420,12 +342,12 @@ class App extends Component {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapStateToProps = state => {
   return {
-    addLocations: locations => {
-      dispatch(addLocations(locations))
-    }
+    tripFilter: state.ui.filter.request,
+    selectedFilterFrom: state.ui.filter.locations.from,
+    selectedFilterTo: state.ui.filter.locations.to
   }
 }
 
-export default connect(null, mapDispatchToProps)(App);
+export default connect(mapStateToProps)(App);

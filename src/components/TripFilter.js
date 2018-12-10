@@ -1,40 +1,75 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from "react-redux";
-import { Select } from 'antd';
+import { Select, Row, Col } from 'antd';
 import PropTypes from 'prop-types';
 
-const TripFilter = ({ placeholder, onChange, value, locations }) => {
-  return (
-    <Select
-      mode="multiple"
-      style={{ width: '100%' }}
-      placeholder={placeholder}
-      onChange={onChange}
-      value={value}
-      allowClear={true}
-      maxTagCount={2}
-    >
-      {placeholder === 'From' ? 
-        locations.from.map((item) =>
-          <Select.Option key={item}>{item}</Select.Option>
-        )
-        : 
-        locations.to.map((item) =>
-        <Select.Option key={item}>{item}</Select.Option>
-        )
-      }
-    </Select>
-  );
+import store from '../redux/store';
+import { setFromLocationFilter, setToLocationFilter } from '../redux/actions';
+
+class TripFilter extends Component {
+
+  handleOnChange = async (value, type) =>  {
+    const { onChange } = this.props;
+
+    if (type === 'from') {
+      await store.dispatch(setFromLocationFilter(value))
+    } else {
+      await store.dispatch(setToLocationFilter(value))
+    }
+    onChange();
+  }
+
+  render() {
+    const { locations } = this.props;
+    return (
+      <Row type="flex" justify="center">
+        <Col xs={12}>
+          <Select
+            mode="multiple"
+            style={{ width: '100%' }}
+            placeholder="From"
+            onChange={value => this.handleOnChange(value, 'from')}
+            allowClear={true}
+            maxTagCount={2}
+          >
+            {locations.from.map((item) =>
+              <Select.Option key={item}>{item}</Select.Option>
+            )}
+          </Select>
+        </Col>
+        <Col xs={12}>
+          <Select
+            mode="multiple"
+            style={{ width: '100%' }}
+            placeholder="To"
+            onChange={value => this.handleOnChange(value, 'to')}
+            allowClear={true}
+            maxTagCount={2}
+          >
+            {locations.to.map((item) =>
+              <Select.Option key={item}>{item}</Select.Option>
+            )}
+          </Select>
+        </Col>
+      </Row>
+    );
+  }
 };
 
 TripFilter.propTypes = {
-  placeholder: PropTypes.string,
-  onChange: PropTypes.func,
-  value: PropTypes.array
+  locations: PropTypes.object,
+  onChange: PropTypes.func
 }
 
-const mapStateToProps = state => {
-  return { locations: state.locations }
+const mapDispatchToProps = dispatch => {
+  return {
+    setFromLocationFilter: filter => {
+      dispatch(setFromLocationFilter(filter))
+    },
+    setToLocationFilter: filter => {
+      dispatch(setToLocationFilter(filter))
+    }
+  }
 }
 
-export default connect(mapStateToProps)(TripFilter);
+export default connect(null, mapDispatchToProps)(TripFilter);

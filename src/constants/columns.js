@@ -4,30 +4,37 @@ import { Icon, Tooltip } from 'antd';
 const columns = [{
     title: 'From',
     dataIndex: 'from',
-    key: 'from'
+    key: 'from',
+    width: 135
   }, {
     title: 'To',
     dataIndex: 'to',
-    key: 'to'
+    key: 'to',
+    width: 135
   }, {
     title: 'Date',
     key: 'date',
-    dataIndex: 'date'
+    dataIndex: 'date',
+    width: 100
   }, {
-    title: () => (
+    title: 'Time',
+    key: 'time',
+    dataIndex: 'time',
+    className: 'colCenter',
+    width: 50,
+    render: (text, record) => (
       <span>
-        <Tooltip title="Time">
-          <Icon type="clock-circle"/>
+        <Tooltip placement="right" title={record.time === '' ? 'Anytime' : record.time}>
+          <Icon type="clock-circle" style={{ fontSize: '18px' }} />
         </Tooltip>
       </span>
-    ),
-    key: 'time',
-    dataIndex: 'time'
+    )
   }, {
     title: 'Details',
     key: 'link',
     dataIndex: 'link',
-    className: 'detailsCol',
+    className: 'colCenter',
+    width: 60,
     render: (text, record) => (
       <span>
         <Tooltip placement="right" title={record.details ? record.details : <Icon type="loading" style={{ fontSize: 16 }} spin />}>
