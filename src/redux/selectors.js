@@ -1,5 +1,7 @@
 import { VISIBILITY_FILTERS } from "../constants";
 
+export const getRequestType = store => console.log(store);
+
 export const getTodosState = store => store.todos;
 
 export const getTodoList = store =>
