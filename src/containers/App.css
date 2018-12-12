@@ -98,3 +98,27 @@ h1 {
 .colCenter {
   text-align: center;
 }
+
+.content {
+  display: inline-block;
+  border: 1px solid black;
+  border-radius: 10px;
+  background: #e9ebee;
+  box-shadow: 5px 5px;
+  backface-visibility: hidden;
+  transition: 0.6s;
+	transform-style: preserve-3d;
+
+	position: relative;
+}
+
+.editIcon {
+  float: left;
+}
+
+
+.editIcon:hover {
+  cursor: pointer;
+  color: #4e77b4;
+  transform: translateY(-1px);
+}

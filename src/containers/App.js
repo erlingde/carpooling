@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Row, Col, Layout } from 'antd';
+import { Row, Col, Layout, Tooltip } from 'antd';
 
 import TripTable from '../components/TripTable';
 import FilterButton from '../components/FilterButton';
 import RefreshButton from '../components/RefreshButton';
 import TripFilter from '../components/TripFilter';
+import CommentButton from '../components/CommentButton';
 
 import api from '../utils/api';
 import logos from '../utils/logos.js';
@@ -169,16 +170,10 @@ class App extends Component {
 
     return (
       <Layout.Content>
-        <div style={{ 
-          display: 'inline-block',
-          border: '1px solid black',
-          borderRadius: '10px',
-          background: '#e9ebee',
-          padding: window.innerWidth < 600 ? '10px 5px' : '25px',
-          boxShadow: '5px 10px'
-        }}>
+        <div className='content' style={ this.props.commentButtonClicked ? '' : { padding: window.innerWidth < 600 ? '10px 5px' : '25px' }}>
           <Row type="flex" align='middle'>
             <Col xs={{ span: 23, offset: 1 }}>
+              <CommentButton />
               <FilterButton onRadioFilterChange={onRadioFilterChange} />
               <RefreshButton fetchData={fetchData} />
             </Col>
@@ -320,6 +315,7 @@ class App extends Component {
   }
 
   render() {
+    console.log('rendering');
     return (
       <div className="App">
         <Layout style={{ background: 'linear-gradient(to right, #243B55, #141E30)', minHeight: '100vh', fontSize: 'calc(10px + 2vmin)' }}>
@@ -346,7 +342,8 @@ const mapStateToProps = state => {
   return {
     tripFilter: state.ui.filter.request,
     selectedFilterFrom: state.ui.filter.locations.from,
-    selectedFilterTo: state.ui.filter.locations.to
+    selectedFilterTo: state.ui.filter.locations.to,
+    commentButtonClicked: state.ui.buttons.commentButtonClicked
   }
 }
 
