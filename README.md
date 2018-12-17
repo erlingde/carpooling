@@ -2,7 +2,8 @@
 [![CircleCI](https://circleci.com/gh/erlingde/carpooling/tree/master.svg?style=svg)](https://circleci.com/gh/erlingde/carpooling/tree/master)<br>
 The project is developed in React and Redux. Styled with [Ant Design](https://ant.design/) and can be viewed [here](https://erlingde.github.io/carpooling).<br>
 Lists all carpooling requests on www.samferda.net but filters out the ones with invalid dates.<br>
-Uses an API provided by [www.apis.is](http://docs.apis.is/#endpoint-rides)<br>
+Uses an API provided by [www.apis.is](http://docs.apis.is/#endpoint-rides).<br>
+Trello board can be viewed [here](https://trello.com/b/2vioiKuW/carpooling).<br>
 
 ## Available Scripts
 
