@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Tooltip, Icon } from 'antd';
 
-class RefreshButton extends Component {
+export class RefreshButton extends Component {
   constructor(props) {
     super(props);
 
@@ -69,6 +69,7 @@ class RefreshButton extends Component {
 
   render() {
     const { refreshIconHover, refreshIconClicked, secondsUntilRefresh } = this.state;
+    
     return (
       <Tooltip title={refreshIconClicked ? `Available to refresh in ${secondsUntilRefresh}s` : 'Refresh'}>
         <Icon

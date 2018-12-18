@@ -7,7 +7,7 @@ import scraper from '../utils/scraper';
 
 import columns from '../constants/columns'
 
-const TripTable = ({data, windowWidth, tableLoading, fetchData, update}) => {
+export const TripTable = ({data, windowWidth, tableLoading, fetchData, update}) => {
     return (
         <Table
             columns={columns}

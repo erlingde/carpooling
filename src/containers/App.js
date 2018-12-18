@@ -56,13 +56,11 @@ class App extends Component {
   }
 
   onRadioFilterChange = (value) => {
-    const { fetchedRideRequests, fetchedPassengerRequests } = this;
-
     this.selectedFilterFrom = [];
     this.selectedFilterTo = [];
 
     this.setState({
-      filteredTrips: value === 'ride' ? fetchedRideRequests : fetchedPassengerRequests
+      filteredTrips: value === 'ride' ? this.fetchedRideRequests : this.fetchedPassengerRequests
     });
   }
 
@@ -77,13 +75,12 @@ class App extends Component {
 
   filterLocations = () => {
     const { selectedFilterFrom, selectedFilterTo, tripFilter } = this.props;
-    const { fetchedPassengerRequests, fetchedRideRequests } = this;
-
+ 
     let tempRequests = [];
-    const selectedRequest = tripFilter === 'ride' ? fetchedRideRequests : fetchedPassengerRequests;
+    const selectedRequest = tripFilter === 'ride' ? this.etchedRideRequests : this.fetchedPassengerRequests;
 
     if (this.props.selectedFilterFrom.length === 0 && this.props.selectedFilterTo.length === 0) {
-      return tripFilter === 'passenger' ? fetchedPassengerRequests : fetchedRideRequests;
+      return tripFilter === 'passenger' ? this.fetchedPassengerRequests : this.fetchedRideRequests;
     }
 
     selectedRequest.forEach(item => {
@@ -125,8 +122,6 @@ class App extends Component {
 
         const locations = populateLocations([...this.fetchedRideRequests, ...this.fetchedPassengerRequests]);
         
-        //store.dispatch(addLocations(locations));
-
         this.setState({
           filteredTrips: tripFilter === 'passenger' ? this.fetchedPassengerRequests : this.fetchedRideRequests,
           tableLoading: false,
@@ -165,7 +160,6 @@ class App extends Component {
 
   renderContent = () => {
     const { filteredTrips, tableLoading, windowWidth, locations } = this.state;
-    const { updateCallback, handleFilterChange, onRadioFilterChange, fetchData } = this;
 
     return (
       <Layout.Content>
@@ -179,14 +173,14 @@ class App extends Component {
         }}>
           <Row type="flex" align='middle'>
             <Col xs={{ span: 23, offset: 1 }}>
-              <FilterButton onRadioFilterChange={onRadioFilterChange} />
-              <RefreshButton fetchData={fetchData} />
+              <FilterButton onRadioFilterChange={this.onRadioFilterChange} />
+              <RefreshButton fetchData={this.fetchData} />
             </Col>
           </Row>
-          <TripFilter onChange={handleFilterChange} locations={locations} />
+          <TripFilter onChange={this.handleFilterChange} locations={locations} />
           <Row type="flex" justify="center">
             <Col xs={24}>
-              <TripTable data={filteredTrips} windowWidth={windowWidth} tableLoading={tableLoading} fetchData={fetchData} update={updateCallback} />
+              <TripTable data={filteredTrips} windowWidth={windowWidth} tableLoading={tableLoading} fetchData={this.fetchData} update={this.updateCallback} />
             </Col>
           </Row>
         </div>
