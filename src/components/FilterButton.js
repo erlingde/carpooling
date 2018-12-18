@@ -6,7 +6,7 @@ import { Tooltip, Radio, Icon } from 'antd';
 import store from '../redux/store';
 import { setRequestType } from '../redux/actions';
 
-const Filterbutton = ({ onRadioFilterChange }) => {
+export const FilterButton = ({ onRadioFilterChange }) => {
     const onRadioChange = (event) => {
         store.dispatch(setRequestType(event.target.value));
         onRadioFilterChange(event.target.value);
@@ -30,7 +30,7 @@ const Filterbutton = ({ onRadioFilterChange }) => {
     );
 }
 
-Filterbutton.propTypes = {
+FilterButton.propTypes = {
     title: propTypes.string,
     value: propTypes.string,
     type: propTypes.string,
@@ -44,4 +44,4 @@ const mapDispatchToProps = dispatch => {
         }
     }
 }
-export default connect(null, mapDispatchToProps)(Filterbutton);
+export default connect(null, mapDispatchToProps)(FilterButton);

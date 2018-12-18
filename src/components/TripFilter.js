@@ -6,8 +6,7 @@ import PropTypes from 'prop-types';
 import store from '../redux/store';
 import { setFromLocationFilter, setToLocationFilter } from '../redux/actions';
 
-class TripFilter extends Component {
-
+export class TripFilter extends Component {
   handleOnChange = async (value, type) =>  {
     const { onChange } = this.props;
 
@@ -21,6 +20,7 @@ class TripFilter extends Component {
 
   render() {
     const { locations } = this.props;
+    
     return (
       <Row type="flex" justify="center">
         <Col xs={12}>
