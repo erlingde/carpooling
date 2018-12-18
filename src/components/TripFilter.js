@@ -47,7 +47,9 @@ export class TripFilter extends Component {
             maxTagCount={2}
           >
             {locations.to.map((item) =>
-              <Select.Option key={item}>{item}</Select.Option>
+              <Select.Option key={item}>
+                {item}
+              </Select.Option>
             )}
           </Select>
         </Col>

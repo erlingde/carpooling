@@ -77,7 +77,7 @@ class App extends Component {
     const { selectedFilterFrom, selectedFilterTo, tripFilter } = this.props;
  
     let tempRequests = [];
-    const selectedRequest = tripFilter === 'ride' ? this.etchedRideRequests : this.fetchedPassengerRequests;
+    const selectedRequest = tripFilter === 'ride' ? this.fetchedRideRequests : this.fetchedPassengerRequests;
 
     if (this.props.selectedFilterFrom.length === 0 && this.props.selectedFilterTo.length === 0) {
       return tripFilter === 'passenger' ? this.fetchedPassengerRequests : this.fetchedRideRequests;

@@ -10,5 +10,6 @@ describe('RefreshButton', () => {
     const div = document.createElement('div');
 
     ReactDOM.render(<RefreshButton onRadioFilterChange={clickFn} />, div);
+    ReactDOM.unmountComponentAtNode(div);
   });
 });

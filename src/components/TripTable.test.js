@@ -9,4 +9,5 @@ it('renders without crashing', () => {
   const div = document.createElement('div');
 
   ReactDOM.render(<TripTable onRadioFilterChange={clickFn} />, div);
+  ReactDOM.unmountComponentAtNode(div);
 });
